@@ -1,0 +1,52 @@
+<section id="admininterface">
+  <div calss="row">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <!--button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#app_Navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button-->
+          <span id="viewtitle" class="navbar-brand">Submission</span>
+        </div>
+        <div class="collapse navbar-collapse" id="app_Navbar">
+
+          <ul class="nav navbar-nav navbar-right" style="overflow:initial">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>Views
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li id="tabYes" role="presentation"><a href="#listYes" class="tablink" data-id="Yes" data-toggle="tab" role="tab" aria-controls="listYes">{{status.Yes}}</a></li>
+                <li id="tabSubmitted" role="presentation"><a href="#listSubmitted" class="tablink" data-id="Submitted" data-toggle="tab" role="tab" aria-controls="listSubmitted">{{status.SubmittedHRC}}</a></li>
+                <li id="tabApproved" role="presentation"><a href="#listApproved" class="tablink" data-id="Approved" data-toggle="tab" role="tab" aria-controls="listApproved">{{status.ApprovedHRC}}</a></li>
+                <li id="tabAll" role="presentation"><a href="#listAll" class="tablink" data-id="All" data-toggle="tab" role="tab" aria-controls="listAll">All</a></li>
+                <li id="tabAllByCaseManager" role="presentation"><a href="#listAllByCaseManager" class="tablink" data-id="AllByCaseManager" data-toggle="tab" role="tab" aria-controls="listAllByCaseManager">By Case Manager</a></li>
+              </ul>
+            </li>
+            <li><a id="btn-createReport" tabindex="0" role="link"><span class="glyphicon glyphicon-pencil"></span>{{button.createNewEntry}}</a></li>
+            <li><a id="btn-print" tabindex="0" role="link"> <span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{button.print}}</a></li>
+            <li><a class="edit-action" id="edit" tabindex="0" role="link"><span class="glyphicon glyphicon-pencil"></span>{{button.edit}}</a></li>
+            <li><a class="save-action" id="submit" tabindex="0" role="link"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>{{button.save}}</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                {{username}}<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation"><a href="#" onclick="cot_login_app.logout();">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div id="viewedit-content" class="content">
+    <div class="alert alert-success hidden" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>      {{messages.current}}
+    </div>
+    <div class="alert alert-danger hidden" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>      {{messages.current}}
+    </div>
+    <div id="viewedit-form"></div>
+  </div>
+</section>

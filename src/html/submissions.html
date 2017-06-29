@@ -1,0 +1,64 @@
+<section id="admininterface">
+  <div calss="row">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <!--button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#app_Navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button-->
+          <span id="viewtitle" class="navbar-brand">Submissions</span>
+        </div>
+        <div class="collapse navbar-collapse" id="app_Navbar">
+
+          <ul class="nav navbar-nav navbar-right" style="overflow:initial">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>Views
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li id="tabYes" role="presentation"><a href="#listYes" class="tablink" data-id="Yes" data-toggle="tab" role="tab" aria-controls="listYes">{{status.Yes}}</a></li>
+                <li id="tabSubmitted" role="presentation"><a href="#listSubmitted" class="tablink" data-id="Submitted" data-toggle="tab" role="tab" aria-controls="listSubmitted">{{status.SubmittedApp}}</a></li>
+                <li id="tabApproved" role="presentation"><a href="#listApproved" class="tablink" data-id="Approved" data-toggle="tab" role="tab" aria-controls="listApproved">{{status.ApprovedApp}}</a></li>
+                <li id="tabAll" role="presentation"><a href="#listAll" class="tablink" data-id="All" data-toggle="tab" role="tab" aria-controls="listAll">All</a></li>
+              </ul>
+            </li>
+            <li><a id="btn-createReport" tabindex="0" role="link"><span class="glyphicon glyphicon-pencil"></span>{{button.createNewEntry}}</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Export
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li id="tabPDF" role="presentation"><a id="tabExportPDF" href="#" class="tabexport"><i class="fa fa-file-pdf-o"></i> PDF</a></li>
+                <li id="tabCSV" role="presentation"><a id="tabExportCSV" href="#" class="tabexport"><i class="fa fa-file-code-o"></i> CSV</a></li>
+                <li id="tabEXCEL" role="presentation"><a id="tabExportEXCEL" href="#" class="tabexport"><i class="fa fa-file-excel-o"></i> Excel</a></li>
+                <li id="tabCOPY" role="presentation"><a id="tabExportCOPY" href="#" class="tabexport"><i class="fa fa-clone"></i> Copy</a></li>
+              </ul>
+            </li>
+            <li>
+              <div id="custom-search-input" style="width:200px !important">
+                <div class="input-group">
+                  <div class="form-group has-feedback has-clear">
+                    <input id="admin_search" aria-label="keyword search" class="form-control" type="text" placeholder="keywordsearch" name="admin_search">
+                    <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+                  </div>
+                  <span class="input-group-btn">
+                        <button id="btn-adminSearch" aria-label="global search" data-id="" class="btn btn-info btn-sm" type="button">
+                            <i class="glyphicon glyphicon-search" title="Global Search"></i>
+                        </button>
+                    </span>
+                </div>
+              </div>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                {{username}}<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation"><a href="#" onclick="cot_login_app.logout();">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</section>
