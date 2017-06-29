@@ -1,10 +1,8 @@
 /**
- * Created by gperry2 on 03/14/2017.
- * Modified by okuscu on 04/01/2017
+ * Created by okuscu on 06/15/2017
  */
-
-let myDropzone = void 0;
-let staffDropzone = void 0;
+let imageDropzone = void 0;
+let docDropzone = void 0;
 let form;
 let cookie_SID = 'graffiti_exemption.sid';
 let cookie_modifiedUsername = 'graffiti_exemption.cot_uname';
@@ -17,8 +15,8 @@ let cookie_modifiedEmail = 'graffiti_exemption.email';
 function checkFileUploads(payload) {
   let queryString = "";
   let binLoc = "";
-  if (payload.uploads[0]) {
-    $.each(payload.uploads, function (index, item) {
+  if (payload.image_uploads[0]) {
+    $.each(payload.image_uploads, function (index, item) {
       if (binLoc == "") {
         binLoc = item.bin_id;
       } else {
@@ -28,8 +26,8 @@ function checkFileUploads(payload) {
     queryString = "&KeepFiles=" + binLoc;
   }
 
-  if (payload.staff_uploads[0]) {
-    $.each(payload.staff_uploads, function (index, item) {
+  if (payload.doc_uploads[0]) {
+    $.each(payload.doc_uploads, function (index, item) {
       if (binLoc == "") {
         binLoc = item.bin_id;
       } else {
@@ -203,8 +201,8 @@ function processForm(action, form_id, repo) {
   //  let f_data = getFormJSON(form_id);
   let f_data = form.getData();
 
-  f_data.uploads = processUploads(myDropzone, repo, true);
-  f_data.staff_uploads = processUploads(staffDropzone, repo, true);
+  f_data.image_uploads = processUploads(imageDropzone, repo, true);
+  f_data.doc_uploads = processUploads(docDropzone, repo, true);
 
   switch (action) {
     case 'save':
@@ -385,14 +383,14 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
   //getSessionStorage(data);
 
   initForm(data);
-  // myDropzone = new Dropzone("div#" + upload_selector, setupDropzone({ fid: fid, form_id: form_id, url: config.api.upload + config.default_repo + '/' + repo }));
+  // imageDropzone = new Dropzone("div#" + upload_selector, setupDropzone({ fid: fid, form_id: form_id, url: config.api.upload + config.default_repo + '/' + repo }));
 
-  myDropzone = new Dropzone("div#admin_dropzone", $.extend(config.admin.myDropzone, {
+  imageDropzone = new Dropzone("div#image_dropzone", $.extend(config.admin.imageDropzone, {
     "dz_id": "admin_dropzone", "fid": fid, "form_id": form_id,
     "url": config.api.upload + config.default_repo + '/' + repo,
   }));
   //"dz_id": "admin_dropzone", "fid": fid, "form_id": form_id,
-  staffDropzone = new Dropzone("div#staff_dropzone", $.extend(config.admin.staffDropzone, {
+  docDropzone = new Dropzone("div#document_dropzone", $.extend(config.admin.docDropzone, {
     "dz_id": "staff_dropzone", "fid": fid, "form_id": form_id,
     "url": config.api.upload + config.default_repo + '/' + repo,
   }));
@@ -419,6 +417,7 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
     // $("#complaintCreated").val(dataCreatedFormatted);
 
     $("#recCreated").val(dataCreated);
+    $("#lsteStatus").val("New");
 
     $("#modifiedEmail").val('{"' + modifiedName + '":"' + modifiedEmail + '"}');
   }
@@ -429,8 +428,8 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
       $("#recCreated").val(moment(allJSON.created).format(config.dateTimeFormat));
     }
 
-    showUploads(myDropzone, 'uploads', data, repo, true, true);
-    showUploads(staffDropzone, 'staff_uploads', data, repo, true, true);
+    showUploads(imageDropzone, 'image_uploads', data, repo, true, true);
+    showUploads(docDropzone, 'doc_uploads', data, repo, true, true);
 
     // Populate existing form with JSON object from GET request
 
@@ -500,9 +499,6 @@ function initForm(data) {
     } else {
       $("#savebtn").hide();
     }
-    //  } else {
-    //    setSessionStorage(form.getData());
-    //  }
   });
 
   $(".edit-action").off('click').on('click', function () {
@@ -534,34 +530,13 @@ function initForm(data) {
 
   if (data) {
     // HIDE/SHOW FIELDS BASED ON OTHER FIELD VALUES
-    getGroundFields(data.typeComplaint);
-    employeeToggle(data.cityEmployee, '#cotEmployeeType', '#cotDivision', '#cotJobType');
-    unionToggle(data.cotEmployeeType, '#cotJobType');
-
-    // divisionComplaintToggle(data.divisionComplaint); // Public only
-    // START - Staff only
-    otherToggle(data.role, 'roleOther');
-    /*   otherToggle(data.enquiryList, 'enquiryListOther');
-       otherToggle(data.consultationList, 'consultationListOther');
-       otherToggle(data.interventionList, 'interventionListOther');*/
-    // END - Staff only   
-    if (data.resolveCompQ === "y" || data.hrtoQ === "y" || data.grievanceQ === "y") {
-      $("#solutionSec").show();
     } else {
-      $("#solutionSec").hide();
-    }
 
-  } else {
+  var dataCreated = new Date();
+  dataCreated = moment(dataCreated).format(config.dateTimeFormat);
+  $("#recCreated").val(dataCreated);
 
-    getGroundFields("");
-    employeeToggle("No", "#cotEmployeeType", "#cotDivision", "#cotJobType");
-    unionToggle("", "#cotJobType");
-    otherToggle("", 'roleOther');
-
-    /*   otherToggle("", 'enquiryListOther');
-       otherToggle("", 'consultationListOther');
-       otherToggle("", 'interventionListOther');*/
-    $("#solutionSec").hide();
+  $("#lsteStatus").val("New");
   }
 
 }
@@ -764,7 +739,7 @@ function getAdminSectionsTop() {
       fields: [
         {
           "id": "lsteStatus",
-          "title": app.data["Status"],
+          "title": config.recStatus.title,
           "type": "dropdown",
           "choices": config.recStatus.choices,
           "class": "col-xs-12 col-md-6"
