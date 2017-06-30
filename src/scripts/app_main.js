@@ -228,7 +228,7 @@ function listSubmissions(status, filter, repo, target) {
             return moment(row.created).format(config.dateTimeFormat3);
           }
         },
-        { "targets": 3, data: function (row, type, val, meta) { return (row.firstName + " " + row.lastName); }, defaultContent: '', title: app.data["Name"] },
+        { "targets": 3, data: function (row, type, val, meta) { return (row.eFirstName + " " + row.eLastName); }, defaultContent: '', title: app.data["Name"] },
         { "targets": 4, data: 'eAddress', "title": app.data["Address"], defaultContent: '', sortOrder: "des" },
         { "targets": 5, data: 'ePrimaryPhone', "title": app.data["Phone"], defaultContent: '', sortOrder: "des" },
         { "targets": 6, data: 'eEmail', title: app.data["Email"], defaultContent: '', sortOrder: "des" },
@@ -388,7 +388,7 @@ function viewEditPage(id, query) {
         .done(function (data) {
           let payload = JSON.parse(data.payload);
           //    $("#viewtitle").html((data.status === 'Yes' ? 'Draft' : config.status[data.status + 'App']) + ' Report: ' + payload.firstName + " " + payload.lastName);
-          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.firstName + " " + payload.lastName + config.timeOutMsg);
+          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.eFirstName + " " + payload.eLastName + config.timeOutMsg);
           loadForm("#viewedit-form", payload, id, data.status, form_id, config.default_repo, data, docMode);
         })
         .fail(function (textStatus, error) {

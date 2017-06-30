@@ -358,14 +358,14 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
 
   //$(destinationSelector).empty();
   //  let sections = $.merge($.merge(getAdminSectionsTop(), getSubmissionSections()), getAdminSectionsBottom());
-  let sections = $.merge(getAdminSectionsTop(data), getSubmissionSections(data));
+  let sections = $.merge(getAdminSectionsTop(), getSubmissionSections(), getAdminSectionsBottom());
 
   //  form = new CotForm({
   form = new CotForm({
     id: form_id,
     title: '',
     useBinding: false,
-    rootPath: config.httpHost.rootPath_public[httpHost],
+    rootPath: config.httpHost.rootPath[httpHost],
     sections: sections,
     success: function (e) {
       // Pass callback function based on submit button clicked
@@ -528,15 +528,27 @@ function initForm(data) {
 
   });
 
+  $('#eNotice').on('change', function () {
+    //  if(this.value == config.status.ApprovedHRC){
+    $('#' + form_id).formValidation('revalidateField', $('#ComplianceDate'));
+    //  }
+  });
+
+  $('#eMaintenance').on('change', function () {
+    //  if(this.value == config.status.ApprovedHRC){
+    $('#' + form_id).formValidation('revalidateField', $('#eMaintenanceAgreement'));
+    //  }
+  });
+
   if (data) {
     // HIDE/SHOW FIELDS BASED ON OTHER FIELD VALUES
-    } else {
+  } else {
 
-  var dataCreated = new Date();
-  dataCreated = moment(dataCreated).format(config.dateTimeFormat);
-  $("#recCreated").val(dataCreated);
+    var dataCreated = new Date();
+    dataCreated = moment(dataCreated).format(config.dateTimeFormat);
+    $("#recCreated").val(dataCreated);
 
-  $("#lsteStatus").val("New");
+    $("#lsteStatus").val("New");
   }
 
 }
@@ -560,7 +572,7 @@ function getSubmissionSections() {
           fields: [
             //"required": true,
             { "id": "eFirstName", "title": app.data["First Name"], "required": true, "className": "col-xs-12 col-md-6" },
-            { "id": "eLstName", "title": app.data["Last Name"], "required": true, "className": "col-xs-12 col-md-6" },
+            { "id": "eLastName", "title": app.data["Last Name"], "required": true, "className": "col-xs-12 col-md-6" },
             { "id": "eAddress", "title": app.data["Address"], "required": true, "className": "col-xs-12 col-md-6" },
             { "id": "eCity", "title": app.data["City"], "value": "Toronto", "className": "col-xs-12 col-md-6" }
           ]
@@ -630,8 +642,10 @@ function getSubmissionSections() {
             {
               "id": "eNotice",
               "title": app.data["notice"],
-              //    "required": true,
-              "type": "radio",
+              //  "required": true,
+              //  "type": "radio",
+              "type": "dropdown",
+              "value": "No",
               "className": "col-xs-12 col-md-12",
               "choices": config.choices.yesNoFull,
               "orientation": "horizontal"
@@ -644,14 +658,25 @@ function getSubmissionSections() {
               "type": "datetimepicker",
               "placeholder": config.dateFormat,
               "className": "col-xs-12 col-md-6",
-              "options": { format: config.dateFormat, maxDate: new Date() },
-              "orientation": "horizontal"
+              "options": { format: config.dateFormat },
+              "validators": {
+                callback: {
+                  message: app.data["compliance"] + ' is required',
+                  // this is added to formValidation
+                  callback: function (value, validator, $field) {
+                    var checkVal = $("#eNotice").val();
+                    return (checkVal !== "Yes") ? true : (value !== '');
+                  }
+                }
+              }
             },
             {
               "id": "eMaintenance",
               "title": app.data["maintenance"],
-              //    "required": true,
-              "type": "radio",
+              //  "required": true,
+              //  "type": "radio",
+              "type": "dropdown",
+              "value": "No",
               "className": "col-xs-12 col-md-12",
               "choices": config.choices.yesNoFull,
               "orientation": "horizontal"
@@ -659,7 +684,17 @@ function getSubmissionSections() {
             {
               "id": "eMaintenanceAgreement", "title": app.data["agreementDetails"],
               //  "required": true,
-              "className": "col-xs-12 col-md-12"
+              "className": "col-xs-12 col-md-12",
+              "validators": {
+                callback: {
+                  message: app.data["agreementDetails"] + ' is required',
+                  // this is added to formValidation
+                  callback: function (value, validator, $field) {
+                    var checkVal = $("#eMaintenance").val();
+                    return (checkVal !== "Yes") ? true : (value !== '');
+                  }
+                }
+              }
             },
             {
               "id": "eArtistInfo", "title": app.data["artistDetails"],
@@ -705,6 +740,42 @@ function getSubmissionSections() {
               className: "col-xs-12 col-md-12",
               html: `<div id="successFailArea" className="col-xs-12 col-md-12"></div>`
             },
+          ]
+        }
+      ]
+    }
+  ]
+  return section;
+}
+function getAdminSectionsTop() {
+  var section = [{
+    rows: [{
+      fields: [
+        {
+          "id": "lsteStatus",
+          "title": config.recStatus.title,
+          "type": "dropdown",
+          "choices": config.recStatus.choices,
+          "class": "col-xs-12 col-md-6"
+        },
+        { "id": "AddressGeoID", "title": app.data["Address Geo ID"], "className": "col-xs-12 col-md-6" },
+        { "id": "MapAddress", "title": app.data["Map Address"], "className": "col-xs-12 col-md-6" },
+        { "id": "ShowMap", "title": app.data["ShowMap"], "className": "col-xs-12 col-md-6" }
+
+      ]
+    }]
+  }];
+  return section;
+}
+function getAdminSectionsBottom() {
+  let section = [
+    {
+      id: "hiddenSec",
+      title: "",
+      className: "panel-info",
+      rows: [
+        {
+          fields: [
             {
               "id": "fid",
               "type": "html",
@@ -723,35 +794,14 @@ function getSubmissionSections() {
             }, {
               "id": "recCreated",
               "type": "html",
-              "html": "<input type=\"text\" id=\"complaintCreated\" aria-label=\"Complaint Creation Date\" aria-hidden=\"true\" name=\"complaintCreated\">",
+              "html": "<input type=\"text\" id=\"recCreated\" aria-label=\"Record Creation Date\" aria-hidden=\"true\" name=\"recCreated\">",
               "class": "hidden"
             }]
-
         }
       ]
     }
   ]
   return section;
-}
-function getAdminSectionsTop() {
-  var sections = [{
-    rows: [{
-      fields: [
-        {
-          "id": "lsteStatus",
-          "title": config.recStatus.title,
-          "type": "dropdown",
-          "choices": config.recStatus.choices,
-          "class": "col-xs-12 col-md-6"
-        },
-        { "id": "AddressGeoID", "title": app.data["Address Geo ID"], "className": "col-xs-12 col-md-6" },
-        { "id": "MapAddress", "title": app.data["Map Address"], "className": "col-xs-12 col-md-6" },
-        { "id": "ShowMap", "title": app.data["ShowMap"], "className": "col-xs-12 col-md-6" }
-
-      ]
-    }]
-  }];
-  return sections;
 }
 
 CotForm.prototype.setData = function (data) {

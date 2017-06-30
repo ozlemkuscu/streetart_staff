@@ -17,12 +17,14 @@ callback({
                 'timeFormat': 'h:mm a',
                 'default_repo': 'graffiti_exemption',
                 'formName': { 'demo': 'Graffiti Exemption Form' },
+                'timeOutMsg': '<br><br><p><strong>The session will time out after 15 minutes of inactivity, please save your work.</strong></p>',
                 'pointerType': {
                     'title': 'Pointer',
                     choices: [{ 'text': 'Select one', 'value': '' }]
                 },
                 'button': {
                     'submit': 'Submit',
+                    'edit': 'Edit',
                     'submitPublic': 'Submit Public',
                     'createNewEntry': 'Create New',
                     'viewSubmissions': 'View Submissions',
@@ -275,6 +277,9 @@ callback({
         }, {
             "summary": "Submission Date",
             "title": "Submission Date Column"
+        }, {
+            "summary": "Name",
+            "title": "Name"
         }, {
             "summary": "First Name",
             "title": "First Name"
