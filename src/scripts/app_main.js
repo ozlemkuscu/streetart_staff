@@ -352,7 +352,7 @@ function newPage(query) {
           });
         }
       }
-      $("#viewtitle").html('Submission' + config.timeOutMsg);
+    //  $("#viewtitle").html('Submission' + config.timeOutMsg);
       loadForm("#new-form", null, null, null, form_id, config.default_repo);
     });
   }
@@ -387,8 +387,7 @@ function viewEditPage(id, query) {
       $.getJSON(config.httpHost.app[httpHost] + config.api.get + repo + '/' + id + '?sid=' + getCookie(cookie_SID))
         .done(function (data) {
           let payload = JSON.parse(data.payload);
-          //    $("#viewtitle").html((data.status === 'Yes' ? 'Draft' : config.status[data.status + 'App']) + ' Report: ' + payload.firstName + " " + payload.lastName);
-          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.eFirstName + " " + payload.eLastName + config.timeOutMsg);
+          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.eFirstName + " " + payload.eLastName); //  + config.timeOutMsg
           loadForm("#viewedit-form", payload, id, data.status, form_id, config.default_repo, data, docMode);
         })
         .fail(function (textStatus, error) {
