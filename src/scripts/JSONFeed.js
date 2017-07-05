@@ -140,6 +140,7 @@ callback({
                     'eventDispatcher': '/rest/COTEventDispatcher_V2/REST',
                     'upload': '/cc_sr_admin_v1/upload/',
                     'session': '/cc_sr_admin_v1/session/',
+                    'timeout':15
                 },
                 'api_public': {
                     'post': '/cc_sr_v1/submit/',
@@ -201,8 +202,8 @@ callback({
                     'Approved': 'Approved',
                     'Deleted': 'Deleted',
                     'Yes': 'New',
-                    'Ongoing': 'Submitted',
-                    'Closed': 'Approved',
+                    'Denied': 'Denied',
+                    'Invalid': 'Invalid',
                     'Search': 'Global Search',
                     'All': 'All',
                     'DraftApp': 'New',

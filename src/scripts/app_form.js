@@ -195,6 +195,36 @@ function emailNotice(fid, action, recipients) {
     }
   });
 }
+function getJSONStatus(statusVal) {
+  var jsonStatusVal = "";
+  /*
+         'DraftApp': 'New',
+         'SubmittedApp': 'Review In Progress',
+         'ApprovedApp': 'Approved',
+         'DeniedApp': 'Denied',
+         'InvalidApp': 'Invalid Requests'
+         */
+  switch (statusVal) {
+    case config.status.DraftApp:
+      jsonStatusVal = config.status.Draft;
+      break;
+    case config.status.SubmittedApp:
+      jsonStatusVal = config.status.Submitted;
+      break;
+    case config.status.ApprovedApp:
+      jsonStatusVal = config.status.Approved;
+      break;
+    case config.status.DeniedApp:
+      jsonStatusVal = config.status.Denied;
+      break;
+    case config.status.InvalidApp:
+      jsonStatusVal = config.status.Invalid;
+      break;
+    default:
+      jsonStatusVal = config.status.Draft;
+  }
+  return jsonStatusVal;
+}
 function processForm(action, form_id, repo) {
   let fid = $("#fid").val();
   let msg, payload;
@@ -210,34 +240,13 @@ function processForm(action, form_id, repo) {
         'done': 'save.done',
         'fail': 'save.fail'
       };
-      var complainStatusVal = $("#complaintStatus").val();
-      var jsonStatusVal = "";
 
-      /*
-       'DraftHRC': 'New',
-       'SubmittedHRC': 'Ongoing',
-       'ApprovedHRC': 'Closed',
-       'DeletedHRC': 'Deleted'
-       */
-      switch ($("#complaintStatus").val()) {
-        case config.status.DraftHRC:
-          jsonStatusVal = config.status.Draft;
-          break;
-        case config.status.ApprovedHRC:
-          jsonStatusVal = config.status.Approved;
-          break;
-        case config.status.SubmittedHRC:
-          jsonStatusVal = config.status.Submitted;
-          break;
-        default:
-          jsonStatusVal = config.status.Draft;
-      }
+      var payloadStatusVal = getJSONStatus($("#lsteStatus").val());
 
       payload = JSON.stringify({
         'payload': JSON.stringify(f_data),
-        'status': jsonStatusVal
+        'status': payloadStatusVal
       });
-
 
       // Update report and move to Submitted state
       if (fid) {
@@ -279,33 +288,10 @@ function processForm(action, form_id, repo) {
 
       // Update report and move to Submitted state
       if (fid) {
-
-        var complainStatusVal = $("#complaintStatus").val();
-        var jsonStatusVal = "";
-
-        /*
-         'DraftHRC': 'New',
-         'SubmittedHRC': 'Ongoing',
-         'ApprovedHRC': 'Closed',
-         'DeletedHRC': 'Deleted'
-         */
-        switch ($("#complaintStatus").val()) {
-          case config.status.DraftHRC:
-            jsonStatusVal = config.status.Draft;
-            break;
-          case config.status.ApprovedHRC:
-            jsonStatusVal = config.status.Approved;
-            break;
-          case config.status.SubmittedHRC:
-            jsonStatusVal = config.status.Submitted;
-            break;
-          default:
-            jsonStatusVal = config.status.Draft;
-        }
-
+        var payloadStatusVal = getJSONStatus($("#lsteStatus").val());
         payload = JSON.stringify({
           'payload': JSON.stringify(f_data),
-          'status': jsonStatusVal
+          'status': payloadStatusVal
         });
 
         updateReport(fid, action, payload, msg, repo, f_data);
@@ -358,7 +344,7 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
 
   //$(destinationSelector).empty();
   //  let sections = $.merge($.merge(getAdminSectionsTop(), getSubmissionSections()), getAdminSectionsBottom());
-  let sections = $.merge(getAdminSectionsTop(), getSubmissionSections(), getAdminSectionsBottom());
+  let sections = $.merge(getAdminSectionsTop(), $.merge(getSubmissionSections(), getAdminSectionsBottom()));
 
   //  form = new CotForm({
   form = new CotForm({
@@ -385,13 +371,13 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
   initForm(data);
   // imageDropzone = new Dropzone("div#" + upload_selector, setupDropzone({ fid: fid, form_id: form_id, url: config.api.upload + config.default_repo + '/' + repo }));
 
-  imageDropzone = new Dropzone("div#image_dropzone", $.extend(config.admin.imageDropzone, {
-    "dz_id": "admin_dropzone", "fid": fid, "form_id": form_id,
+  imageDropzone = new Dropzone("div#image_dropzone", $.extend(config.admin.imageDropzoneStaff, {
+    "dz_id": "image_dropzone", "fid": fid, "form_id": form_id,
     "url": config.api.upload + config.default_repo + '/' + repo,
   }));
   //"dz_id": "admin_dropzone", "fid": fid, "form_id": form_id,
-  docDropzone = new Dropzone("div#document_dropzone", $.extend(config.admin.docDropzone, {
-    "dz_id": "staff_dropzone", "fid": fid, "form_id": form_id,
+  docDropzone = new Dropzone("div#document_dropzone", $.extend(config.admin.docDropzoneStaff, {
+    "dz_id": "document_dropzone", "fid": fid, "form_id": form_id,
     "url": config.api.upload + config.default_repo + '/' + repo,
   }));
 
@@ -482,7 +468,6 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
     }
   }
 }
-
 function initForm(data) {
 
   // we need to call off click first to overcome multiple POST requests with event registration
@@ -723,8 +708,8 @@ function getSubmissionSections() {
         {
           fields: [
             { "id": "AttachmentText", "title": "", "type": "html", "html": app.data["AttachmentText"], "className": "col-xs-12 col-md-12" },
-            { "id": "Images", "prehelptext": app.data["ImagesText"], "title": app.data["Images"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Images", "html": '<section aria-label="File Upload Control Field for Images" id="attachment"> <div class="dropzone" id="image_dropzone" aria-label="Dropzone File Upload Control for Images Section"></div></section>', "className": "col-xs-12 col-md-12" },
-            { "id": "Documents", "prehelptext": app.data["DocumentsText"], "title": app.data["Documents"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Documents", "html": '<section aria-label="File Upload Control Field for Documents" id="attachment"> <div class="dropzone" id="document_dropzone" aria-label="Dropzone File Upload Control for Document Section"></div></section>', "className": "col-xs-12 col-md-12" },
+            { "id": "Images", "prehelptext": app.data["ImagesText"], "title": app.data["Images"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Images", "html": '<section aria-label="File Upload Control Field for Images" id="attachment"> <div class="dropzone" id="image_dropzone" aria-label="Dropzone File Upload Control for Images Section"></div></section><section id="image_uploads"></section>', "className": "col-xs-12 col-md-12" },
+            { "id": "Documents", "prehelptext": app.data["DocumentsText"], "title": app.data["Documents"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Documents", "html": '<section aria-label="File Upload Control Field for Documents" id="attachment"> <div class="dropzone" id="document_dropzone" aria-label="Dropzone File Upload Control for Document Section"></div></section><section id="doc_uploads"></section>', "className": "col-xs-12 col-md-12" },
             { "id": "DeclarationText", "title": "", "type": "html", "html": app.data["DeclarationText"], "className": "col-xs-12 col-md-12" },
             {
               id: "actionBar",
@@ -768,7 +753,7 @@ function getAdminSectionsTop() {
   return section;
 }
 function getAdminSectionsBottom() {
-  let section = [
+  var section = [
     {
       id: "hiddenSec",
       title: "",
@@ -892,5 +877,25 @@ CotForm.prototype.getData = function () {
   return $.extend(data, blanks);
 };
 
+CotSession.prototype.extend = function (timeout) {
+  console.log("in timeout code");
+  /**
+   *     @author Graham Perry <graham.perry@toronto.ca>
+   *     @version 0.1
+   *     @param {Number} timeout - the number of minutes to set the cookie expiration to.
+   *     @returns {undefined}
+   */
+  let date = new Date(Date.now() + (timeout * 60 * 1000));
+  let cookies = ['sid', 'cot_uname', 'email', 'firstName', 'lastName', 'groups'];
+  let that = this;
+  $.each(cookies, function (i, val) {
+    that._removeCookie(val);
+  });
+  cookies = ['sid', 'userID', 'email', 'firstName', 'lastName', 'groups'];
+  $.each(cookies, function (i, val) {
+    that._cookie(val, that[val], { expires: date });
+  });
+  this._loadSessionFromCookie();
+};
 
 

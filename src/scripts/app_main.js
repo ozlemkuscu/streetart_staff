@@ -62,6 +62,9 @@ function detectHost() {
 }
 // Page authorization based on user cookie and group permissions
 function auth() {
+
+  oLogin.session.extend(config.api.timeout);
+
   if (!oLogin.isLoggedIn()) {
     //  console.log("user not logged in");
     $("#app-content-top").empty().html(config.auth.login);
@@ -135,7 +138,6 @@ function tpl(id, mst, callback) {
   });
 }
 function listSubmissions(status, filter, repo, target) {
-
   //verify user still has a session
   if (auth()) {
     app.setContent({ bottom: '<div class="row"><div class="col-xs-12"><div id="view_pane" class="">viewPane</div></div></div>' });
@@ -159,53 +161,53 @@ function listSubmissions(status, filter, repo, target) {
     json.repo = repo;
     json.status = status == "Search" ? "" : (status == "All" ? "" : status);
     //  json.filter = filter;
-    json.filter = (status == "All" ? "status~(Yes)|(Submitted)|(Approved)" : filter);
+    json.filter = (status == "All" ? "status~(Yes)|(Submitted)|(Approved)|(Denied)|(Invalid)" : filter);
 
     let args = "";
 
     //initialize new cc_retrieve_view (pass in constructor)
-  /*  if (status == "All") {
-      // build cc_retrieve_view constructor
-      args = {
-        url: config.httpHost.app[httpHost] + config.api.get + repo + '/?json=' + JSON.stringify(json) + '&sid=' + getCookie(cookie_SID),
-        target: $("#" + target),
-        addScroll: true,
-        addFilter: true,
-        defaultSortOrder: "des",
-        addFooter: true,
-        dateFormat: config.dateTimeFormat,
-        columnDefs: [
-          { "targets": 0, data: null, title: '<span class="sr-only">' + app.data["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
-          { "targets": 3, data: function (row, type, val, meta) { return (row.eFirstName + " " + row.eLastName); }, defaultContent: '', title: app.data["Name"] },
-          { "targets": 4, data: 'actionList', "title": app.data["Action List"], defaultContent: '', sortOrder: "des" },
-          { "targets": 5, data: 'ground', "title": app.data["Ground"], defaultContent: 'Other', sortOrder: "des" },
-          { "targets": 6, data: 'typeComplaint', title: app.data["Type of Complaint"], defaultContent: '', sortOrder: "des" },
-          { "targets": 7, data: 'divisionComplaint', "title": app.data["CityDivision"], defaultContent: '', sortOrder: "des" },
-          { "targets": 8, data: 'issue', title: app.data["Issue"], defaultContent: '' },
-          { "targets": 9, data: 'caseManager', "title": app.data["Case Manager"], defaultContent: '', sortOrder: "des" },
-          {
-            "targets": 10, defaultContent: '', title: app.data["AddContactName1"],
-            data: function (row, type, val, meta) {
-              return (row.grid_0_addfirstName == null ? '' : row.grid_0_addfirstName + ' ') + (row.grid_0_addlastName == null ? '' : row.grid_0_addlastName);
-            }
-          },
-          {
-            "targets": 11, defaultContent: '', title: app.data["AddContactName2"],
-            data: function (row, type, val, meta) {
-              return (row.grid_1_addfirstName == null ? '' : row.grid_1_addfirstName + ' ') + (row.grid_1_addlastName == null ? '' : row.grid_1_addlastName);
-            }
-          },
-          {
-            "targets": 12, defaultContent: '', title: app.data["AddContactName3"],
-            data: function (row, type, val, meta) {
-              return (row.grid_2_addfirstName == null ? '' : row.grid_2_addfirstName + ' ') + (row.grid_2_addlastName == null ? '' : row.grid_2_addlastName);
-            }
-          },
-        ]
-      };
-
-    }
-  } else {*/
+    /*  if (status == "All") {
+        // build cc_retrieve_view constructor
+        args = {
+          url: config.httpHost.app[httpHost] + config.api.get + repo + '/?json=' + JSON.stringify(json) + '&sid=' + getCookie(cookie_SID),
+          target: $("#" + target),
+          addScroll: true,
+          addFilter: true,
+          defaultSortOrder: "des",
+          addFooter: true,
+          dateFormat: config.dateTimeFormat,
+          columnDefs: [
+            { "targets": 0, data: null, title: '<span class="sr-only">' + app.data["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
+            { "targets": 3, data: function (row, type, val, meta) { return (row.eFirstName + " " + row.eLastName); }, defaultContent: '', title: app.data["Name"] },
+            { "targets": 4, data: 'actionList', "title": app.data["Action List"], defaultContent: '', sortOrder: "des" },
+            { "targets": 5, data: 'ground', "title": app.data["Ground"], defaultContent: 'Other', sortOrder: "des" },
+            { "targets": 6, data: 'typeComplaint', title: app.data["Type of Complaint"], defaultContent: '', sortOrder: "des" },
+            { "targets": 7, data: 'divisionComplaint', "title": app.data["CityDivision"], defaultContent: '', sortOrder: "des" },
+            { "targets": 8, data: 'issue', title: app.data["Issue"], defaultContent: '' },
+            { "targets": 9, data: 'caseManager', "title": app.data["Case Manager"], defaultContent: '', sortOrder: "des" },
+            {
+              "targets": 10, defaultContent: '', title: app.data["AddContactName1"],
+              data: function (row, type, val, meta) {
+                return (row.grid_0_addfirstName == null ? '' : row.grid_0_addfirstName + ' ') + (row.grid_0_addlastName == null ? '' : row.grid_0_addlastName);
+              }
+            },
+            {
+              "targets": 11, defaultContent: '', title: app.data["AddContactName2"],
+              data: function (row, type, val, meta) {
+                return (row.grid_1_addfirstName == null ? '' : row.grid_1_addfirstName + ' ') + (row.grid_1_addlastName == null ? '' : row.grid_1_addlastName);
+              }
+            },
+            {
+              "targets": 12, defaultContent: '', title: app.data["AddContactName3"],
+              data: function (row, type, val, meta) {
+                return (row.grid_2_addfirstName == null ? '' : row.grid_2_addfirstName + ' ') + (row.grid_2_addlastName == null ? '' : row.grid_2_addlastName);
+              }
+            },
+          ]
+        };
+  
+      }
+    } else {*/
     // build cc_retrieve_view constructor
     args = {
       url: config.httpHost.app[httpHost] + config.api.get + repo + '/?json=' + JSON.stringify(json) + '&sid=' + getCookie(cookie_SID),
@@ -238,36 +240,36 @@ function listSubmissions(status, filter, repo, target) {
         { "targets": 10, data: 'eMaintenance', "title": "Maintenance", defaultContent: '', sortOrder: "des" }
       ]
     }
- // }
+    // }
 
 
-  var myDataTable = new cc_retrieve_view(args);
+    var myDataTable = new cc_retrieve_view(args);
 
-  //render cc_retrieve_view
-  myDataTable.render();
-  $('.dataTables_filter').hide();
-  $("#admin_search").on("keyup search input paste cut", function () {
-    myDataTable.dt.search(this.value).draw();
-  });
+    //render cc_retrieve_view
+    myDataTable.render();
+    $('.dataTables_filter').hide();
+    $("#admin_search").on("keyup search input paste cut", function () {
+      myDataTable.dt.search(this.value).draw();
+    });
 
-  var originalIncrease = window.increaseFontSize;
-  window.increaseFontSize = function () {
-    originalIncrease();
-    myDataTable.dt.draw();
+    var originalIncrease = window.increaseFontSize;
+    window.increaseFontSize = function () {
+      originalIncrease();
+      myDataTable.dt.draw();
+    }
+
+    var originalDecrease = window.decreaseFontSize;
+    window.decreaseFontSize = function () {
+      originalDecrease();
+      myDataTable.dt.draw();
+    }
+
+    $('ul.dropdown-menu > li').removeClass('active');
+    $('#tabExportCSV').click(function () { $(".dt-button.buttons-csv.buttons-html5").click(); });
+    $('#tabExportEXCEL').click(function () { $(".dt-button.buttons-excel.buttons-html5").click(); });
+    $('#tabExportPDF').click(function () { $(".dt-button.buttons-pdf.buttons-html5").click(); });
+    $('#tabExportCOPY').click(function () { $(".dt-button.buttons-copy.buttons-html5").click(); });
   }
-
-  var originalDecrease = window.decreaseFontSize;
-  window.decreaseFontSize = function () {
-    originalDecrease();
-    myDataTable.dt.draw();
-  }
-
-  $('ul.dropdown-menu > li').removeClass('active');
-  $('#tabExportCSV').click(function () { $(".dt-button.buttons-csv.buttons-html5").click(); });
-  $('#tabExportEXCEL').click(function () { $(".dt-button.buttons-excel.buttons-html5").click(); });
-  $('#tabExportPDF').click(function () { $(".dt-button.buttons-pdf.buttons-html5").click(); });
-  $('#tabExportCOPY').click(function () { $(".dt-button.buttons-copy.buttons-html5").click(); });
-}
 }
 function deleteReport(fid, payload, modal, repo) {
   $(".btn").prop('disabled', true);
@@ -352,7 +354,7 @@ function newPage(query) {
           });
         }
       }
-    //  $("#viewtitle").html('Submission' + config.timeOutMsg);
+      //  $("#viewtitle").html('Submission' + config.timeOutMsg);
       loadForm("#new-form", null, null, null, form_id, config.default_repo);
     });
   }
