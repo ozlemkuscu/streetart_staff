@@ -140,7 +140,7 @@ callback({
                     'eventDispatcher': '/rest/COTEventDispatcher_V2/REST',
                     'upload': '/cc_sr_admin_v1/upload/',
                     'session': '/cc_sr_admin_v1/session/',
-                    'timeout':15
+                    'timeout': 30
                 },
                 'api_public': {
                     'post': '/cc_sr_v1/submit/',
@@ -149,6 +149,12 @@ callback({
                 'members': {
                     'app_g': 'G',
                     'app_admin': 'testweb1,MLS_user,MLS_admin,okuscu,bkiri'
+                },
+                'admin': {
+                    'Ozlem Kuscu': 'ozlem.kuscu@toronto.ca'
+                },
+                'captain': {
+                    'Ozlem Kuscu': 'ozlem.kuscu@toronto.ca'
                 },
                 'recStatus': {
                     'title': 'Status',
@@ -260,6 +266,10 @@ callback({
             }
         },
         {
+            "summary": "Please upload minimum one image.",
+            "title": "imageValidation"
+        },
+        {
             "title": "breadcrumbtrail",
             "summary": [{
                 "name": "Living In Toronto",
@@ -270,6 +280,9 @@ callback({
             }]
         },
         {
+            "summary": "Request for Regularization for Art Mural/Graffiti Art under Municipal Code Chapter 485, Graffiti",
+            "title": "Form Title"
+        }, {
             "summary": "Contact Person",
             "title": "Contact Details Section"
         }, {
@@ -342,11 +355,17 @@ callback({
             "summary": "When must your property be brought into compliance with the Bylaw?",
             "title": "compliance"
         }, {
+            "summary": "Compliance Date",
+            "title": "complianceValidation"
+        }, {
             "summary": "Do you have a maintenance agreement with the artist?",
             "title": "maintenance"
         }, {
             "summary": "If Yes, please provide details of your agreement:",
             "title": "agreementDetails"
+        }, {
+            "summary": "Agreement Detail",
+            "title": "agreementDetailsValidation"
         }, {
             "summary": "Please provide information on the artist responsible for the art mural/graffiti art on your property.",
             "title": "artistDetails"
@@ -395,6 +414,15 @@ callback({
         }, {
             "summary": "Show Map Link",
             "title": "ShowMap"
+        }, {
+            "summary": "Please print a copy of this form for your records and then click Submit.",
+            "title": "PrintFormText"
+        }, {
+            "summary": "Please review your information before submitting. Once you click submit, you will not be able to edit.",
+            "title": "ReviewText"
+        }, {
+            "summary": "An issue has occured uploading the file to the server. Please try again. If the issue persists, please contact...",
+            "title": "uploadServerErrorMessage"
         }
     ]
 });

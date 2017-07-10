@@ -63,7 +63,12 @@ function detectHost() {
 // Page authorization based on user cookie and group permissions
 function auth() {
 
-  oLogin.session.extend(config.api.timeout);
+  // This code is for extending cookie Expiry Time as long as the user interacts with server
+  try {
+    oLogin.session.expireIn(config.api.timeout);
+  } catch (err) {
+    // do nothing, just continue the code block
+  }
 
   if (!oLogin.isLoggedIn()) {
     //  console.log("user not logged in");

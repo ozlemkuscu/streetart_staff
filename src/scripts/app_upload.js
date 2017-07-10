@@ -29,7 +29,7 @@ function processUploads(DZ, repo, sync) {
   //console.log(DZ.options.dz_id,'_files',_files)
   var syncFiles = sync;
   if (_files.length == 0) {
-  //  console.log('No Files Attached');
+    //  console.log('No Files Attached');
   } else {
     $.each(_files, function (i, row) {
       var json = JSON.parse(row.xhr.response);
@@ -94,40 +94,44 @@ function showUploads(DZ, id, data, repo, allowDelete, showTable) {
     updateAttachmentStatus(thisDZ, file.bin_id, repo, 'delete');
   });
   $(".removeUpload").on('click', function () {
-    event.preventDefault();updateAttachmentStatus(thisDZ, $(this).attr('data-bin'), repo, 'delete', $(this).attr('data-id'));
+    event.preventDefault(); updateAttachmentStatus(thisDZ, $(this).attr('data-bin'), repo, 'delete', $(this).attr('data-id'));
   });
 }
 function getDefaultThumbnail(stringType) {
   var thumb = "";
-  var type = stringType.indexOf("/") > -1 ? stringType.split("/")[1] : stringType;
-  switch (type) {
-    case "jpeg":
-    case "mpeg":
-    case "png":
-    case "image":
-      thumb = "img/imageicon.png";
-      break;
-    case "mp3":
-    case "mp4":
-    case "wma":
-      thumb = "img/audio.png";
-      break;
-    case "doc":
-      thumb = "img/word.png";
-      break;
-    case "ppt":
-      thumb = "img/ppt.png";
-      break;
-    case "xsl":
-    case "xslx":
-    case "csv":
-      thumb = "img/excelFile.png";
-      break;
-    case "pdf":
-      thumb = "img/pdf.png";
-      break;
-    default:
-      thumb = "img/default.png";
+  if (typeof stringType == 'undefined') {
+    thumb = "img/default.png";
+  } else {
+    var type = stringType.indexOf("/") > -1 ? stringType.split("/")[1] : stringType;
+    switch (type) {
+      case "jpeg":
+      case "mpeg":
+      case "png":
+      case "image":
+        thumb = "img/imageicon.png";
+        break;
+      case "mp3":
+      case "mp4":
+      case "wma":
+        thumb = "img/audio.png";
+        break;
+      case "doc":
+        thumb = "img/word.png";
+        break;
+      case "ppt":
+        thumb = "img/ppt.png";
+        break;
+      case "xsl":
+      case "xslx":
+      case "csv":
+        thumb = "img/excelFile.png";
+        break;
+      case "pdf":
+        thumb = "img/pdf.png";
+        break;
+      default:
+        thumb = "img/default.png";
+    }
   }
   return thumb;
 }

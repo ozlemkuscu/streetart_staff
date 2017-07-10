@@ -114,6 +114,7 @@ function updateReport(fid, action, payload, msg, repo, formData) {
     },
     dataType: 'json'
   }).done(function (data) {
+    action = 'notify';
     switch (action) {
       case 'save':
         hasher.setHash(fid + '?alert=success&msg=' + msg.done + '&ts=' + new Date().getTime());
@@ -122,7 +123,7 @@ function updateReport(fid, action, payload, msg, repo, formData) {
         break;
       case 'notify':
         // Email report notice to emergency management captain and incident manager/reporters
-        //emailNotice(fid, action, ['captain']);
+        emailNotice(fid, action, ['captain']);
         break;
 
       case 'submit':
@@ -144,6 +145,62 @@ function updateReport(fid, action, payload, msg, repo, formData) {
   });
 }
 function emailNotice(fid, action, recipients) {
+  let emailTo ={};
+
+  let emailCaptain = config.captain; //'Ozlem Kuscu':'ozlem.kuscu@toronto.ca'
+  let emailAdmin = config.admin;
+  if (typeof emailCaptain !== 'undefined' && emailCaptain != "") {
+    $.extend(emailTo, emailCaptain);
+  }
+
+  if (typeof emailAdmin !== 'undefined' && emailAdmin != "") {
+    $.extend(emailTo, emailAdmin);
+  }
+
+  var emailRecipients = $.map(emailTo, function (email) {
+    return email;
+  }).filter(function (itm, i, a) {
+    return i === a.indexOf(itm);
+  }).join(',');
+
+  /*var payload = JSON.stringify({
+    'email': 'ozlem.kuscu@toronto.ca',//emailRecipients,
+    'id': fid,
+    'status': action,
+    'home': 'temp'
+  });*/
+  var payload = JSON.stringify({
+    'email': emailRecipients,
+    'id': fid,
+    'status': action,
+    'home': 'temp'
+  });
+
+  $.ajax({
+    url: '/cc_sr_admin_v1/submit/graffiti_exemption_email', //config.api.email,
+    type: 'POST',
+    data: payload,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8;',
+      'Cache-Control': 'no-cache'
+    },
+    dataType: 'json'
+  }).done(function (data, textStatus, jqXHR) {
+    console.log("Email notification sent");
+
+    if (action === 'notify') {
+      hasher.setHash(fid + '?alert=success&msg=notify.done&ts=' + new Date().getTime());
+    }
+  }).fail(function (jqXHR, textStatus, error) {
+    console.log("POST Request Failed: " + textStatus + ", " + error);
+
+    if (action === 'notify') {
+      hasher.setHash(fid + '?alert=danger&msg=notify.fail&ts=' + new Date().getTime());
+    }
+  });
+}
+
+function emailNoticeOriginal(fid, action, recipients) {
   let emailTo;
   if ($("#modifiedEmail").val()) {
     emailTo = JSON.parse($("#modifiedEmail").val());
@@ -603,7 +660,7 @@ function getSubmissionSections() {
               "className": "col-xs-12 col-md-6"
             },
             { "id": "emFacingStreet", "title": app.data["Facing Street"], "className": "col-xs-12 col-md-6" },
-            { "id": "emDescriptiveLocation", "prehelptext": app.data["DescriptiveLocationText"], "title": app.data["graffitiDesLocation"], "required": true, "type": "textarea", "className": "col-xs-12 col-md-12" }
+            { "id": "emDescriptiveLocation", "prehelptext": app.data["DescriptiveLocationText"], "title": app.data["graffitiDesLocation"], "required": true, "className": "col-xs-12 col-md-6" }
           ]
         }
       ]
@@ -702,7 +759,7 @@ function getSubmissionSections() {
     },
     {
       id: "attSec",
-      title: app.data["Attachment Section"],
+      title: app.data["Attachments Section"],
       className: "panel-info",
       rows: [
         {
@@ -877,25 +934,25 @@ CotForm.prototype.getData = function () {
   return $.extend(data, blanks);
 };
 
-CotSession.prototype.extend = function (timeout) {
-  console.log("in timeout code");
-  /**
-   *     @author Graham Perry <graham.perry@toronto.ca>
-   *     @version 0.1
-   *     @param {Number} timeout - the number of minutes to set the cookie expiration to.
-   *     @returns {undefined}
-   */
-  let date = new Date(Date.now() + (timeout * 60 * 1000));
-  let cookies = ['sid', 'cot_uname', 'email', 'firstName', 'lastName', 'groups'];
-  let that = this;
-  $.each(cookies, function (i, val) {
-    that._removeCookie(val);
-  });
-  cookies = ['sid', 'userID', 'email', 'firstName', 'lastName', 'groups'];
-  $.each(cookies, function (i, val) {
-    that._cookie(val, that[val], { expires: date });
-  });
-  this._loadSessionFromCookie();
+CotSession.prototype.expireIn = function (minutes) {
+  //set how long the current session cookies should last before expiring, in minutes
+  //returns true if the session cookie expiry times were updated, false if not (because there is no session data)
+  //NOTE: not entirely sure what should happen if the current session cookies are expired...
+  if (this.sid) {
+    this._storeLogin({
+      passwordExpiryDate: (new Date()).getTime() + (minutes * 60 * 1000),
+      sid: this.sid,
+      userID: this.username || '',
+      email: this.email || '',
+      cotUser: {
+        firstName: this.firstName || '',
+        lastName: this.lastName || '',
+        division: this.division || '',
+        groupMemberships: this.groups || ''
+      }
+    });
+    return true;
+  }
+  return false;
 };
-
 
