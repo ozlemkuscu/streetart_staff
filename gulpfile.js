@@ -47,8 +47,8 @@ const styleDir = 'styles';
 //'I:\\secure\\docs\\webapps\\work\\gp\\cot_csu
 ////const devDeployPath = 'm:\\work\\decom\\hrc\\';
 /////const qaDeployPath = 'm:\\work\\decom\\hrc_qa\\';
-const devDeployPath = 'M:\\work\\decom\\graffiti_exemption_staff\\';
-const qaDeployPath = 'M:\\work\\decom\\graffiti_exemption_staff_qa\\';
+const devDeployPath = 'M:\\work\\decom\\streetart_staff\\';
+const qaDeployPath = 'M:\\work\\decom\\streetart_staff_qa\\';
 //what the aws deploy info?
 const awsRegion = 'ca-central-1';
 const awsBucket = 'bucket.toronto.ca';

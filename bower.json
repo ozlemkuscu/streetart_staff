@@ -1,6 +1,6 @@
 {
-  "name": "graffiti_exemption",
-  "description": "Graffiti Exemptions Staff",
+  "name": "streetart",
+  "description": "Application to manage artists directory and exemptions",
   "authors": [
     "Ozlem Kuscu"
   ],

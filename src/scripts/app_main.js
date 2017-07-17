@@ -1,5 +1,5 @@
-const configURL = "//www1.toronto.ca/static_files/WebApps/CommonComponents/graffiti_exemption/JSONFeed.js";
-const app = new cot_app("Graffiti Exemption", {
+const configURL = "//www1.toronto.ca/static_files/WebApps/CommonComponents/streetart/JSONFeed.js";
+const app = new cot_app("StreetARToronto Artist Directory", {
   hasFooter: true,
   hasContentBottom: true,
   hasContentRight: true,
@@ -13,7 +13,7 @@ let oLogin;
 let groupMemberships = [];
 
 let tab = "Yes";
-let form_id = "graffiti_exemption_form";
+let form_id = "streetart";
 let config;
 $(document).ready(function () {
   loadVariables();
@@ -62,14 +62,15 @@ function detectHost() {
 }
 // Page authorization based on user cookie and group permissions
 function auth() {
-
+  // console.log("in auth");
   // This code is for extending cookie Expiry Time as long as the user interacts with server
+  /*
   try {
     oLogin.session.expireIn(config.api.timeout);
   } catch (err) {
     // do nothing, just continue the code block
   }
-
+*/
   if (!oLogin.isLoggedIn()) {
     //  console.log("user not logged in");
     $("#app-content-top").empty().html(config.auth.login);
@@ -112,6 +113,7 @@ function auth() {
   }
 }
 function sessionCheck(success, failed) {
+  ///  console.log("sessionCheck");
   // to check if the session is still active
   $.ajax({
     url: config.httpHost.app[httpHost] + config.api.session + getCookie(cookie_SID),
@@ -171,48 +173,6 @@ function listSubmissions(status, filter, repo, target) {
     let args = "";
 
     //initialize new cc_retrieve_view (pass in constructor)
-    /*  if (status == "All") {
-        // build cc_retrieve_view constructor
-        args = {
-          url: config.httpHost.app[httpHost] + config.api.get + repo + '/?json=' + JSON.stringify(json) + '&sid=' + getCookie(cookie_SID),
-          target: $("#" + target),
-          addScroll: true,
-          addFilter: true,
-          defaultSortOrder: "des",
-          addFooter: true,
-          dateFormat: config.dateTimeFormat,
-          columnDefs: [
-            { "targets": 0, data: null, title: '<span class="sr-only">' + app.data["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
-            { "targets": 3, data: function (row, type, val, meta) { return (row.eFirstName + " " + row.eLastName); }, defaultContent: '', title: app.data["Name"] },
-            { "targets": 4, data: 'actionList', "title": app.data["Action List"], defaultContent: '', sortOrder: "des" },
-            { "targets": 5, data: 'ground', "title": app.data["Ground"], defaultContent: 'Other', sortOrder: "des" },
-            { "targets": 6, data: 'typeComplaint', title: app.data["Type of Complaint"], defaultContent: '', sortOrder: "des" },
-            { "targets": 7, data: 'divisionComplaint', "title": app.data["CityDivision"], defaultContent: '', sortOrder: "des" },
-            { "targets": 8, data: 'issue', title: app.data["Issue"], defaultContent: '' },
-            { "targets": 9, data: 'caseManager', "title": app.data["Case Manager"], defaultContent: '', sortOrder: "des" },
-            {
-              "targets": 10, defaultContent: '', title: app.data["AddContactName1"],
-              data: function (row, type, val, meta) {
-                return (row.grid_0_addfirstName == null ? '' : row.grid_0_addfirstName + ' ') + (row.grid_0_addlastName == null ? '' : row.grid_0_addlastName);
-              }
-            },
-            {
-              "targets": 11, defaultContent: '', title: app.data["AddContactName2"],
-              data: function (row, type, val, meta) {
-                return (row.grid_1_addfirstName == null ? '' : row.grid_1_addfirstName + ' ') + (row.grid_1_addlastName == null ? '' : row.grid_1_addlastName);
-              }
-            },
-            {
-              "targets": 12, defaultContent: '', title: app.data["AddContactName3"],
-              data: function (row, type, val, meta) {
-                return (row.grid_2_addfirstName == null ? '' : row.grid_2_addfirstName + ' ') + (row.grid_2_addlastName == null ? '' : row.grid_2_addlastName);
-              }
-            },
-          ]
-        };
-  
-      }
-    } else {*/
     // build cc_retrieve_view constructor
     args = {
       url: config.httpHost.app[httpHost] + config.api.get + repo + '/?json=' + JSON.stringify(json) + '&sid=' + getCookie(cookie_SID),
@@ -222,7 +182,6 @@ function listSubmissions(status, filter, repo, target) {
       defaultSortOrder: "des",
       addFooter: true,
       dateFormat: config.dateFormatView,
-      /////      dateFormat: 'YYYY/MM/DD h:mm a',
       columnDefs: [
         { "targets": 0, data: null, defaultContent: '', title: '<span class="sr-only">' + app.data["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
         { "targets": 1, data: 'lsteStatus', "title": config.recStatus.title, defaultContent: '', sortOrder: "des" },
@@ -235,18 +194,17 @@ function listSubmissions(status, filter, repo, target) {
             return moment(row.created).format(config.dateTimeFormat3);
           }
         },
-        { "targets": 3, data: function (row, type, val, meta) { return (row.eFirstName + " " + row.eLastName); }, defaultContent: '', title: app.data["Name"] },
-        { "targets": 4, data: 'eAddress', "title": app.data["Address"], defaultContent: '', sortOrder: "des" },
-        { "targets": 5, data: 'ePrimaryPhone', "title": app.data["Phone"], defaultContent: '', sortOrder: "des" },
-        { "targets": 6, data: 'eEmail', title: app.data["Email"], defaultContent: '', sortOrder: "des" },
-        { "targets": 7, data: 'emAddress', "title": app.data["Graffiti Address"], defaultContent: '', sortOrder: "des" },
-        { "targets": 8, data: 'AddressGeoID', title: app.data["Address Geo ID"], defaultContent: '' },
-        { "targets": 9, data: 'epermission', "title": "Permission", defaultContent: '', sortOrder: "des" },
-        { "targets": 10, data: 'eMaintenance', "title": "Maintenance", defaultContent: '', sortOrder: "des" }
+        { "targets": 3, data: function (row, type, val, meta) { return (row.FirstName + " " + row.LastName); }, defaultContent: '', title: app.data["Name"] },
+        { "targets": 4, data: 'Address', "title": app.data["AddressColumn"], defaultContent: '', sortOrder: "des" },
+        { "targets": 5, data: 'City', "title": app.data["City"], defaultContent: '', sortOrder: "des" },
+        { "targets": 6, data: 'Province', "title": app.data["Province"], defaultContent: '', sortOrder: "des" },
+        { "targets": 7, data: 'PostalCode', "title": app.data["Postal Code"], defaultContent: '', sortOrder: "des" },
+        { "targets": 8, data: 'PrimaryPhone', "title": app.data["Primary Phone"], defaultContent: '', sortOrder: "des" },
+        { "targets": 9, data: 'OtherPhone', "title": app.data["Other Phone"], defaultContent: '', sortOrder: "des" },
+        { "targets": 10, data: 'Email', title: app.data["Email"], defaultContent: '', sortOrder: "des" },
+        { "targets": 11, data: 'ContactMethod', "title": app.data["preferredMethodColumn"], defaultContent: '', sortOrder: "des" },
       ]
     }
-    // }
-
 
     var myDataTable = new cc_retrieve_view(args);
 
