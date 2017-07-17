@@ -5,7 +5,7 @@
 
 #be sure to update these vars:
 REMOTE_PATH=/Volumes/inet/secure/docs/webapps/source/
-APP_NAME=graffiti_exemption_staff.git
+APP_NAME=streetart_staff.git
 
 #get current dir
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
