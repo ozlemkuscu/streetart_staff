@@ -188,7 +188,7 @@ function listSubmissions(status, filter, repo, target) {
         {
           "targets": 2, defaultContent: '', title: app.data["Submission Date Column"], type: 'date',
           data: function (row, type, val, meta) {
-            if (row.recCreated != "") {
+            if (row.recCreated !== "") {
               return moment(new Date(row.recCreated)).format(config.dateTimeFormat3);
             }
             return moment(row.created).format(config.dateTimeFormat3);
@@ -352,7 +352,7 @@ function viewEditPage(id, query) {
       $.getJSON(config.httpHost.app[httpHost] + config.api.get + repo + '/' + id + '?sid=' + getCookie(cookie_SID))
         .done(function (data) {
           let payload = JSON.parse(data.payload);
-          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.eFirstName + " " + payload.eLastName); //  + config.timeOutMsg
+          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.FirstName + " " + payload.LastName); //  + config.timeOutMsg
           loadForm("#viewedit-form", payload, id, data.status, form_id, config.default_repo, data, docMode);
         })
         .fail(function (textStatus, error) {

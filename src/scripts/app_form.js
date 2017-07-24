@@ -2,15 +2,15 @@
  * Created by okuscu on 06/15/2017
  */
 let imageDropzone = void 0;
-let docDropzone = void 0;
+let resumeDropzone = void 0;
 let form;
 
 let appParam = 'streetart';
-let cookie_SID = appParam+'.sid';
-let cookie_modifiedUsername = appParam+'.cot_uname';
-let cookie_modifiedFirstName = appParam+'.firstName';
-let cookie_modifiedLastName = appParam+'.lastName';
-let cookie_modifiedEmail = appParam+'.email';
+let cookie_SID = appParam + '.sid';
+let cookie_modifiedUsername = appParam + '.cot_uname';
+let cookie_modifiedFirstName = appParam + '.firstName';
+let cookie_modifiedLastName = appParam + '.lastName';
+let cookie_modifiedEmail = appParam + '.email';
 
 //let sessionStatus = false;
 
@@ -19,29 +19,17 @@ function checkFileUploads(payload) {
   let binLoc = "";
   if (payload.image_uploads[0]) {
     $.each(payload.image_uploads, function (index, item) {
-      if (binLoc == "") {
-        binLoc = item.bin_id;
-      } else {
-        binLoc = binLoc + "," + item.bin_id;
-      }
+      (binLoc == "") ? binLoc = item.bin_id : binLoc = binLoc + "," + item.bin_id;
     })
-    queryString = "&KeepFiles=" + binLoc;
   }
-
   if (payload.doc_uploads[0]) {
     $.each(payload.doc_uploads, function (index, item) {
-      if (binLoc == "") {
-        binLoc = item.bin_id;
-      } else {
-        binLoc = binLoc + "," + item.bin_id;
-      }
+      (binLoc == "") ? binLoc = item.bin_id : binLoc = binLoc + "," + item.bin_id;
     })
   }
-
-  if (binLoc != "") {
+  if (binLoc !== "") {
     queryString = "&KeepFiles=" + binLoc;
   }
-
   return queryString;
 }
 function saveReport(action, payload, msg, form_id, repo) {
@@ -116,7 +104,7 @@ function updateReport(fid, action, payload, msg, repo, formData) {
     },
     dataType: 'json'
   }).done(function (data) {
-  //  action = 'notify';
+    //  action = 'notify';
     switch (action) {
       case 'save':
         hasher.setHash(fid + '?alert=success&msg=' + msg.done + '&ts=' + new Date().getTime());
@@ -169,7 +157,7 @@ function emailNotice(fid, action) {
     'id': fid,
     'status': action,
     'body': (config.messages.notify.emailBody ? config.messages.notify.emailBody : 'New submission has been received.'),
-    'emailSubject': (config.messages.notify.emailSubject?config.messages.notify.emailSubject:'New submission')
+    'emailSubject': (config.messages.notify.emailSubject ? config.messages.notify.emailSubject : 'New submission')
   });
 
   $.ajax({
@@ -281,7 +269,7 @@ function processForm(action, form_id, repo) {
   let f_data = form.getData();
 
   f_data.image_uploads = processUploads(imageDropzone, repo, true);
-  f_data.doc_uploads = processUploads(docDropzone, repo, true);
+  f_data.doc_uploads = processUploads(resumeDropzone, repo, true);
 
   switch (action) {
     case 'save':
@@ -425,8 +413,8 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
     "url": config.api.upload + config.default_repo + '/' + repo,
   }));
   //"dz_id": "admin_dropzone", "fid": fid, "form_id": form_id,
-  docDropzone = new Dropzone("div#document_dropzone", $.extend(config.admin.docDropzoneStaff, {
-    "dz_id": "document_dropzone", "fid": fid, "form_id": form_id,
+  resumeDropzone = new Dropzone("div#resume_dropzone", $.extend(config.admin.resumeDropzoneStaff, {
+    "dz_id": "resume_dropzone", "fid": fid, "form_id": form_id,
     "url": config.api.upload + config.default_repo + '/' + repo,
   }));
 
@@ -446,13 +434,12 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
     $("#createdBy, #modifiedBy").val(modifiedUsername);
     var dataCreated = new Date();
 
-
     var dataCreated = new Date();
-    // dataCreatedFormatted = moment(dataCreated).format(config.dateTimeFormat);
-    // $("#complaintCreated").val(dataCreatedFormatted);
+    dataCreated = moment(dataCreated).format(config.dateTimeFormat);
+    $("#recCreated").val(dataCreated);
 
     $("#recCreated").val(dataCreated);
-    $("#lsteStatus").val("New");
+    $("#lstStatus").val("New");
 
     $("#modifiedEmail").val('{"' + modifiedName + '":"' + modifiedEmail + '"}');
   }
@@ -464,7 +451,7 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
     }
 
     showUploads(imageDropzone, 'image_uploads', data, repo, true, true);
-    showUploads(docDropzone, 'doc_uploads', data, repo, true, true);
+    showUploads(resumeDropzone, 'doc_uploads', data, repo, true, true);
 
     // Populate existing form with JSON object from GET request
 
@@ -534,7 +521,6 @@ function initForm(data) {
       $("#savebtn").hide();
     }
   });
-
   $(".edit-action").off('click').on('click', function () {
     $("#" + form_id).find("input, textarea, select, button").attr('disabled', false);
     $(".dz-hidden-input").prop("disabled", false);
@@ -544,7 +530,6 @@ function initForm(data) {
     $("#savebtn").show();
     docMode = "";
   });
-
   $("#savebtn").click(function () {
     $(".edit-action").hide();
     $("#action").val($(this).attr('id'));
@@ -562,16 +547,22 @@ function initForm(data) {
 
   });
 
-  $('#eNotice').on('change', function () {
-    //  if(this.value == config.status.ApprovedHRC){
-    $('#' + form_id).formValidation('revalidateField', $('#ComplianceDate'));
-    //  }
+  $('input[name="PreferredContactName"]').change(function () {
+    let checkedVal = $('input[name="PreferredContactName"]:checked').val();
+    $('#' + form_id).formValidation('revalidateField', $('#FirstName'));
+    $('#' + form_id).formValidation('revalidateField', $('#LastName'));
+    $('#' + form_id).formValidation('revalidateField', $('#ArtistAlias'));
+    $('#' + form_id).formValidation('revalidateField', $('#Organization'));
   });
 
-  $('#eMaintenance').on('change', function () {
-    //  if(this.value == config.status.ApprovedHRC){
-    $('#' + form_id).formValidation('revalidateField', $('#eMaintenanceAgreement'));
-    //  }
+  $('input[name="ContactMethod"]').change(function () {
+    let checkedVal = $('input[name="PreferredContactName"]:checked').val();
+    $('#' + form_id).formValidation('revalidateField', $('#Address'));
+    $('#' + form_id).formValidation('revalidateField', $('#City'));
+    $('#' + form_id).formValidation('revalidateField', $('#Province'));
+    $('#' + form_id).formValidation('revalidateField', $('#PostalCode'));
+    $('#' + form_id).formValidation('revalidateField', $('#PrimaryPhone'));
+    $('#' + form_id).formValidation('revalidateField', $('#Email'));
   });
 
   if (data) {
@@ -603,30 +594,154 @@ function getSubmissionSections() {
       className: "panel-info",
       rows: [
         {
+          fields: [{
+            id: "actionBar",
+            type: "html",
+            html: `<div className="col-xs-12 col-md-12"><button class="btn btn-success" id="savebtn"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> ` + config.button.submitReport + `</button>
+                 </div>`
+          }]
+        }, {
           fields: [
-            //"required": true,
-            { "id": "FirstName", "title": app.data["First Name"], "className": "col-xs-12 col-md-6" },
-            { "id": "LastName", "title": app.data["Last Name"], "className": "col-xs-12 col-md-6" },
-            { "id": "ArtistAlias", "title": app.data["Artist Alias"], "className": "col-xs-12 col-md-6" },
-            { "id": "Organization", "title": app.data["Organization"], "className": "col-xs-12 col-md-6" },
+            {
+              "id": "FirstName", "title": app.data["First Name"], "className": "col-xs-12 col-md-6",
+              "required": true,
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="PreferredContactName"]:checked').val();
+                    return ((checkVal !== "Full Name") ? true : (value !== ''));
+                  }
+                }
+              }
+            },
+            {
+              "id": "LastName", "title": app.data["Last Name"], "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="PreferredContactName"]:checked').val();
+                    return ((checkVal !== "Full Name") ? true : (value !== ''));
+                  }
+                }
+              }
+            }]
+        }, {
+          fields: [
+            {
+              "id": "ArtistAlias", "title": app.data["Artist Alias"], "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="PreferredContactName"]:checked').val();
+                    return ((checkVal !== "Artist Alias") ? true : (value !== ''));
+                  }
+                }
+              }
+            },
+            {
+              "id": "Organization", "title": app.data["Organization"], "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="PreferredContactName"]:checked').val();
+                    return ((checkVal !== "Business") ? true : (value !== ''));
+                  }
+                }
+              }
+            }]
+        }, {
+          fields: [
             {
               "id": "PreferredContactName",
+              "required": true,
               "title": app.data["Preferred Name"],
               "type": "radio",
-              "className": "col-xs-12 col-md-12",
+              "className": "col-xs-12 col-md-6",
               "choices": config.preferredName.choices,
               "orientation": "horizontal",
-              "prehelptext": app.data["PreferredNameText"]
-            },
+              "prehelptext": app.data["PreferredNameText"],
+            }]
+        }, {
+          fields: [
             { "id": "OrganizationDescription", "title": app.data["Artist Bio"], "type": "textarea", "className": "col-xs-12 col-md-12" },
-            { "id": "Address", "title": app.data["Address"], "className": "col-xs-12 col-md-6" },
-            { "id": "City", "title": app.data["City"], "className": "col-xs-12 col-md-6" },
-            { "id": "Province", "title": app.data["Province"], "className": "col-xs-12 col-md-6" },
-            { "id": "PostalCode", "title": app.data["Postal Code"], "className": "col-xs-12 col-md-6" },
-            { "id": "PrimaryPhone", "title": app.data["Primary Phone"], "validationtype": "Phone", "className": "col-xs-12 col-md-6" },
-            { "id": "OtherPhone", "title": app.data["Other Phone"], "validationtype": "Phone", "className": "col-xs-12 col-md-6" },
-            { "id": "Email", "title": app.data["Email"], "validationtype": "Email", "validators": { regexp: { regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: 'This field must be a valid email. (###@###.####)' } }, "className": "col-xs-12 col-md-6" },
-            { "id": "URL", "title": app.data["URL"], "value": "http://", "className": "col-xs-12 col-md-6" },
+            {
+              "id": "Address", "title": app.data["Address"], "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="ContactMethod"]:checked').val();
+                    return ((checkVal !== "Mail") ? true : (value !== ''));
+                  }
+                }
+              }
+            },
+            {
+              "id": "City", "title": app.data["City"], "value": "Toronto", "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="ContactMethod"]:checked').val();
+                    return ((checkVal !== "Mail") ? true : (value !== ''));
+                  }
+                }
+              }
+            }]
+        }, {
+          fields: [
+            {
+              "id": "Province", "title": app.data["Province"], "value": "Ontario", "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="ContactMethod"]:checked').val();
+                    return ((checkVal !== "Mail") ? true : (value !== ''));
+                  }
+                }
+              }
+            },
+            {
+              "id": "PostalCode", "title": app.data["Postal Code"], "validationtype": "PostalCode", "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="ContactMethod"]:checked').val();
+                    return ((checkVal !== "Mail") ? true : (value !== ''));
+                  }
+                }
+              }
+            }]
+        }, {
+          fields: [
+            {
+              "id": "PrimaryPhone", "title": app.data["Primary Phone"], "validationtype": "Phone", "className": "col-xs-12 col-md-6",
+              "required": true,
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="ContactMethod"]:checked').val();
+                    return ((checkVal !== "Phone") ? true : (value !== ''));
+                  }
+                }
+              }
+            },
+            { "id": "OtherPhone", "title": app.data["Other Phone"], "validationtype": "Phone", "className": "col-xs-12 col-md-6" }]
+        }, {
+          fields: [
+            {
+              "id": "Email", "title": app.data["Email"], "validationtype": "Email", "validators": { regexp: { regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: 'This field must be a valid email. (###@###.####)' } }, "className": "col-xs-12 col-md-6",
+              "validators": {
+                callback: {
+                  callback: function (value, validator, $field) {
+                    var checkVal = $('input[name="ContactMethod"]:checked').val();
+                    return ((checkVal !== "Email") ? true : (value !== ''));
+                  }
+                }
+              }
+            },
+            { "id": "URL", "title": app.data["URL"], "value": "http://", "className": "col-xs-12 col-md-6" }
+          ]
+        }, {
+          fields: [
             {
               "id": "ContactMethod",
               "title": app.data["preferredMethod"],
@@ -672,7 +787,7 @@ function getSubmissionSections() {
       rows: [
         {
           fields: [
-            { "id": "chkCV", "title": "", "type": "checkbox", "choices": config.chkCVAvailable.choices, "orientation": "horizontal", "class": "col-xs-12 col-md-4", "className": "col-xs-12 col-md-12" },
+            { "id": "chkCV", "title": "", "type": "checkbox", "choices": config.chkCVAvailable.choices, "orientation": "horizontal", "className": "col-xs-12 col-md-12" },
             { "id": "CV", "title": app.data["CV"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Resume", "html": '<section aria-label="File Upload Control Field for Resume" id="attachment"> <div class="dropzone" id="resume_dropzone" aria-label="Dropzone File Upload Control for Resume Section"></div></section>', "className": "col-xs-12 col-md-12" }
           ]
         }]
@@ -688,7 +803,17 @@ function getSubmissionSections() {
             { "id": "FooterText", "title": "", "type": "html", "html": app.data["FooterText1"], "className": "col-xs-12 col-md-12" },
             { "id": "FooterText", "title": "", "type": "html", "html": app.data["FooterText2"], "className": "col-xs-12 col-md-12" },
             { "id": "FooterText", "title": "", "type": "html", "html": app.data["FooterText3"], "className": "col-xs-12 col-md-12" },
-            { "id": "chkDeclaration", "title": "", "type": "checkbox", "choices": config.chkDeclaration.choices, "orientation": "horizontal", "class": "col-xs-12 col-md-4", "className": "col-xs-12 col-md-12" },
+            {
+              "id": "chkDeclaration", "title": "", "type": "checkbox", "choices": config.chkDeclaration.choices, "orientation": "horizontal", "className": "col-xs-12 col-md-12",
+              "validators": {
+                callback: {
+                  message: app.data["declarationValidation"],
+                  callback: function (value, validator, $field) {
+                    return $field[0].checked;
+                  }
+                }
+              }
+            },
             {
               id: "actionBar",
               type: "html",
@@ -716,17 +841,12 @@ function getSubmissionSections() {
             }, {
               "id": "createdBy",
               "type": "html",
-              "html": "<input type=\"text\" id=\"createdBy\" aria-label=\"Complaint Created By\" aria-hidden=\"true\" name=\"createdBy\">",
+              "html": "<input type=\"text\" id=\"createdBy\" aria-label=\"Record Created By\" aria-hidden=\"true\" name=\"createdBy\">",
               "class": "hidden"
             }, {
               "id": "recCreated",
               "type": "html",
-              "html": "<input type=\"text\" id=\"complaintCreated\" aria-label=\"Complaint Creation Date\" aria-hidden=\"true\" name=\"complaintCreated\">",
-              "class": "hidden"
-            }, {
-              "id": "lstStatus",
-              "type": "html",
-              "html": "<input type=\"hidden\" aria-label=\"Status\" aria-hidden=\"true\" id=\"lstStatus\" name=\"lstStatus\">",
+              "html": "<input type=\"text\" id=\"recCreated\" aria-label=\"Record Creation Date\" aria-hidden=\"true\" name=\"recCreated\">",
               "class": "hidden"
             }]
 
@@ -746,11 +866,7 @@ function getAdminSectionsTop() {
           "type": "dropdown",
           "choices": config.recStatus.choices,
           "class": "col-xs-12 col-md-6"
-        },
-        { "id": "AddressGeoID", "title": app.data["Address Geo ID"], "className": "col-xs-12 col-md-6" },
-        { "id": "MapAddress", "title": app.data["Map Address"], "className": "col-xs-12 col-md-6" },
-        { "id": "ShowMap", "title": app.data["ShowMap"], "className": "col-xs-12 col-md-6" }
-
+        }
       ]
     }]
   }];

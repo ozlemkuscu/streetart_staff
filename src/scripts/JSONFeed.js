@@ -10,6 +10,7 @@ callback({
         'v2': { 'title': "StreetARToronto" },
         'dateTimeFormat': 'MM/DD/YYYY hh:mm',
         'dateTimeFormat2': 'YYYY/MM/DD hh:mm',
+        'dateTimeFormat3': 'MM/DD/YYYY hh:mm a',
         'dateFormat': 'MM/DD/YYYY',
         'dateFormat2': 'YYYY-MM-DD',
         'dateFormatView': 'YYYY/MM/DD h:mm a',
@@ -194,7 +195,8 @@ callback({
             'fail': 'Unable to notify! This report could not be sent to the Emergency Management Captain. Please try again.',
             'emailFrom': 'wmDev@toronto.ca',
             'emailSubject': 'New Artist Profile',
-            'emailBody': 'New Artist Profile has been received.'
+            'emailBody': 'New Artist Profile has been received.',
+            'sendNotification':true
           },
           'submit': {
             'done': 'Thank you! Your request has been received.',
@@ -252,8 +254,8 @@ callback({
             "acceptedFiles": "image/*,application/pdf,application/PDF,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "maxFiles": 1,
             "dictDefaultMessage": "Drop files here or <button class='btn-link' aria-label='File Upload - Drop files here or click to upload' type='button'>select</button> to upload.",
-            "maxFilesize": 1,
-            "dictFileTooBig": "Maximum size for file attachment is 1 MB",
+            "maxFilesize": 10,
+            "dictFileTooBig": "Maximum size for file attachment is 10 MB",
             "addRemoveLinks": true,
             "dictMaxFilesExceeded": "Maximum 1 uploaded file"
           },
@@ -261,8 +263,8 @@ callback({
             "acceptedFiles": "image/*,application/pdf,application/PDF,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "maxFiles": 1,
             "dictDefaultMessage": "Drop files here or <button class='btn-link' aria-label='File Upload - Drop files here or click to upload' type='button'>select</button> to upload.",
-            "maxFilesize": 1,
-            "dictFileTooBig": "Maximum size for file attachment is 1 MB",
+            "maxFilesize": 10,
+            "dictFileTooBig": "Maximum size for file attachment is 10 MB",
             "addRemoveLinks": true,
             "dictMaxFilesExceeded": "Maximum 1 uploaded file"
           },
@@ -270,8 +272,8 @@ callback({
             "acceptedFiles": "image/*,application/pdf,application/PDF,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "maxFiles": 5,
             "dictDefaultMessage": "Drop files here or <button class='btn-link' aria-label='File Upload - Drop files here or click to upload' type='button'>select</button> to upload.",
-            "maxFilesize": 1,
-            "dictFileTooBig": "Maximum size for file attachment is 1 MB",
+            "maxFilesize": 10,
+            "dictFileTooBig": "Maximum size for file attachment is 10 MB",
             "addRemoveLinks": true,
             "dictMaxFilesExceeded": "Maximum 5 uploaded file"
           },
@@ -279,8 +281,8 @@ callback({
             "acceptedFiles": "image/*,application/pdf,application/PDF,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "maxFiles": 5,
             "dictDefaultMessage": "Drop files here or <button class='btn-link' aria-label='File Upload - Drop files here or click to upload' type='button'>select</button> to upload.",
-            "maxFilesize": 1,
-            "dictFileTooBig": "Maximum size for file attachment is 1 MB",
+            "maxFilesize": 10,
+            "dictFileTooBig": "Maximum size for file attachment is 10 MB",
             "addRemoveLinks": true,
             "dictMaxFilesExceeded": "Maximum 5 uploaded file"
           }
@@ -299,6 +301,10 @@ callback({
         "name": "StreetARToronto",
         "link": "http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=bebb4074781e1410VgnVCM10000071d60f89RCRD"
       }]
+    },
+    {
+      "summary": "Open",
+      "title": "View_Edit"
     },
     {
       "summary": "Preferred Name for Contact",
@@ -434,6 +440,9 @@ callback({
     }, {
       "summary": "Any use of or reliance on this website, the contents of this website or the information provided through this website shall be at your sole risk. The City of Toronto does not endorse or sponsor any of the artists identified on this website. The City of Toronto provides the website as an open list to artists on an 'as is', 'as available', basis. Further, the City of Toronto does not represent and warrant that the website or its contents will be available or meet your requirements, that access will be uninterrupted, that there will be no delays, failures or errors or omissions or loss of transmitted information, that no viruses or other contaminating or destructive properties will be transmitted or that no damage will occur to your computer system due to use of the website.",
       "title": "FooterText3"
+    }, {
+      "summary": "Your cannot submit without marking that you will not engage in illegal graffiti.",
+      "title": "declarationValidation"
     }, {
       "summary": "<strong>I acknowledge my profile will be removed from the City of Toronto Artist Directory if I am found to be engaging in illegal graffiti activities or charged for mischief related to graffiti vandalism.</strong>",
       "title": "DeclarationText"
