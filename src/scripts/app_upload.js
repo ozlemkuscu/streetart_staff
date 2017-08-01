@@ -115,6 +115,9 @@ function getDefaultThumbnail(stringType) {
       case "wma":
         thumb = "img/audio.png";
         break;
+      case "vnd.openxmlformats-officedocument.wordprocessingml.document":
+        thumb = "img/word.png";
+        break;
       case "doc":
         thumb = "img/word.png";
         break;

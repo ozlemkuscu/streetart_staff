@@ -35,7 +35,8 @@ function checkFileUploads(payload) {
 function saveReport(action, payload, msg, form_id, repo) {
   // $(".btn").prop('disabled', true);
 
-  let keepQueryString = checkFileUploads(payload);
+  let uploads = (payload.image_uploads).concat(payload.doc_uploads);
+  let keepQueryString = checkFileUploads(uploads);
 
   $.ajax({
     url: config.httpHost.app[httpHost] + config.api.post + repo + '?sid=' + getCookie(cookie_SID) + keepQueryString,
@@ -92,7 +93,8 @@ function saveReport(action, payload, msg, form_id, repo) {
 function updateReport(fid, action, payload, msg, repo, formData) {
   //  $(".btn").prop('disabled', true);
 
-  let keepQueryString = checkFileUploads(formData);
+  let uploads = (formData.image_uploads).concat(formData.doc_uploads);
+  let keepQueryString = checkFileUploads(uploads);
 
   $.ajax({
     url: config.httpHost.app[httpHost] + config.api.put + repo + '/' + fid + '?sid=' + getCookie(cookie_SID) + keepQueryString,
@@ -265,7 +267,7 @@ function getJSONStatus(statusVal) {
 function processForm(action, form_id, repo) {
   let fid = $("#fid").val();
   let msg, payload;
-  //  let f_data = getFormJSON(form_id);
+
   let f_data = form.getData();
 
   f_data.image_uploads = processUploads(imageDropzone, repo, true);
@@ -435,11 +437,8 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
     var dataCreated = new Date();
 
     var dataCreated = new Date();
-    dataCreated = moment(dataCreated).format(config.dateTimeFormat);
-    $("#recCreated").val(dataCreated);
-
-    $("#recCreated").val(dataCreated);
-    $("#lstStatus").val("New");
+     $("#recCreated").val(dataCreated);
+    $("#lstStatus").val(config.status.DraftApp);
 
     $("#modifiedEmail").val('{"' + modifiedName + '":"' + modifiedEmail + '"}');
   }
@@ -603,9 +602,9 @@ function getSubmissionSections() {
         }, {
           fields: [
             {
-              "id": "FirstName", "title": app.data["First Name"], "className": "col-xs-12 col-md-6",
-              "required": true,
-              "validators": {
+              id: "FirstName", title: app.data["First Name"], className: "col-xs-12 col-md-6",
+              required: true,
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="PreferredContactName"]:checked').val();
@@ -615,8 +614,8 @@ function getSubmissionSections() {
               }
             },
             {
-              "id": "LastName", "title": app.data["Last Name"], "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "LastName", title: app.data["Last Name"], className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="PreferredContactName"]:checked').val();
@@ -628,8 +627,8 @@ function getSubmissionSections() {
         }, {
           fields: [
             {
-              "id": "ArtistAlias", "title": app.data["Artist Alias"], "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "ArtistAlias", title: app.data["Artist Alias"], className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="PreferredContactName"]:checked').val();
@@ -639,8 +638,8 @@ function getSubmissionSections() {
               }
             },
             {
-              "id": "Organization", "title": app.data["Organization"], "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "Organization", title: app.data["Organization"], className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="PreferredContactName"]:checked').val();
@@ -652,21 +651,21 @@ function getSubmissionSections() {
         }, {
           fields: [
             {
-              "id": "PreferredContactName",
-              "required": true,
-              "title": app.data["Preferred Name"],
-              "type": "radio",
-              "className": "col-xs-12 col-md-6",
-              "choices": config.preferredName.choices,
-              "orientation": "horizontal",
+              id: "PreferredContactName",
+              required: true,
+              title: app.data["Preferred Name"],
+              type: "radio",
+              className: "col-xs-12 col-md-6",
+              choices: config.preferredName.choices,
+              orientation: "horizontal",
               "prehelptext": app.data["PreferredNameText"],
             }]
         }, {
           fields: [
-            { "id": "OrganizationDescription", "title": app.data["Artist Bio"], "type": "textarea", "className": "col-xs-12 col-md-12" },
+            { id: "OrganizationDescription", title: app.data["Artist Bio"], type: "textarea", className: "col-xs-12 col-md-12" },
             {
-              "id": "Address", "title": app.data["Address"], "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "Address", title: app.data["Address"], className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="ContactMethod"]:checked').val();
@@ -676,8 +675,8 @@ function getSubmissionSections() {
               }
             },
             {
-              "id": "City", "title": app.data["City"], "value": "Toronto", "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "City", title: app.data["City"], value: "Toronto", className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="ContactMethod"]:checked').val();
@@ -689,8 +688,8 @@ function getSubmissionSections() {
         }, {
           fields: [
             {
-              "id": "Province", "title": app.data["Province"], "value": "Ontario", "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "Province", title: app.data["Province"], value: "Ontario", className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="ContactMethod"]:checked').val();
@@ -700,8 +699,8 @@ function getSubmissionSections() {
               }
             },
             {
-              "id": "PostalCode", "title": app.data["Postal Code"], "validationtype": "PostalCode", "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "PostalCode", title: app.data["Postal Code"], "validationtype": "PostalCode", className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="ContactMethod"]:checked').val();
@@ -713,9 +712,9 @@ function getSubmissionSections() {
         }, {
           fields: [
             {
-              "id": "PrimaryPhone", "title": app.data["Primary Phone"], "validationtype": "Phone", "className": "col-xs-12 col-md-6",
-              "required": true,
-              "validators": {
+              id: "PrimaryPhone", title: app.data["Primary Phone"], "validationtype": "Phone", className: "col-xs-12 col-md-6",
+              required: true,
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="ContactMethod"]:checked').val();
@@ -724,12 +723,12 @@ function getSubmissionSections() {
                 }
               }
             },
-            { "id": "OtherPhone", "title": app.data["Other Phone"], "validationtype": "Phone", "className": "col-xs-12 col-md-6" }]
+            { id: "OtherPhone", title: app.data["Other Phone"], "validationtype": "Phone", className: "col-xs-12 col-md-6" }]
         }, {
           fields: [
             {
-              "id": "Email", "title": app.data["Email"], "validationtype": "Email", "validators": { regexp: { regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: 'This field must be a valid email. (###@###.####)' } }, "className": "col-xs-12 col-md-6",
-              "validators": {
+              id: "Email", title: app.data["Email"], "validationtype": "Email", validators: { regexp: { regexp: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: 'This field must be a valid email. (###@###.####)' } }, className: "col-xs-12 col-md-6",
+              validators: {
                 callback: {
                   callback: function (value, validator, $field) {
                     var checkVal = $('input[name="ContactMethod"]:checked').val();
@@ -738,17 +737,17 @@ function getSubmissionSections() {
                 }
               }
             },
-            { "id": "URL", "title": app.data["URL"], "value": "http://", "className": "col-xs-12 col-md-6" }
+            { id: "URL", title: app.data["URL"], value: "http://", className: "col-xs-12 col-md-6" }
           ]
         }, {
           fields: [
             {
-              "id": "ContactMethod",
-              "title": app.data["preferredMethod"],
-              "type": "radio",
-              "choices": config.preferredMethod.choices,
-              "orientation": "horizontal",
-              "className": "col-xs-12 col-md-6"
+              id: "ContactMethod",
+              title: app.data["preferredMethod"],
+              type: "radio",
+              choices: config.preferredMethod.choices,
+              orientation: "horizontal",
+              className: "col-xs-12 col-md-6"
             }
           ]
         }
@@ -762,20 +761,20 @@ function getSubmissionSections() {
       rows: [
         {
           fields: [
-            { "id": "workToPublicText", "title": "", "type": "html", "html": app.data["WorkToPublicText"], "className": "col-xs-12 col-md-12" },
+            { id: "workToPublicText", title: "", type: "html", html: app.data["WorkToPublicText"], className: "col-xs-12 col-md-12" },
             {
-              "id": "WorkToPublic",
-              "orientation": "horizontal",
-              "title": app.data["Work To Public"],
-              "type": "radio",
-              "value": "",
-              "choices": config.choices.yesNoFull,
-              "className": "col-xs-12 col-md-6"
+              id: "WorkToPublic",
+              orientation: "horizontal",
+              title: app.data["Work To Public"],
+              type: "radio",
+              value: "",
+              choices: config.choices.yesNoFull,
+              className: "col-xs-12 col-md-6"
             },
-            { "id": "Profile", "prehelptext": app.data["ProfileText"], "title": app.data["Profile"], "type": "textarea", "className": "col-xs-12 col-md-12" },
-            { "id": "IntNavail", "title": app.data["Availability"], "type": "textarea", "className": "col-xs-12 col-md-12" },
-            { "id": "Exp", "title": app.data["Experience"], "type": "textarea", "className": "col-xs-12 col-md-12" },
-            { "id": "WorkHistory", "title": app.data["Work History"], "type": "textarea", "className": "col-xs-12 col-md-12" }
+            { id: "Profile", "prehelptext": app.data["ProfileText"], title: app.data["Profile"], type: "textarea", className: "col-xs-12 col-md-12" },
+            { id: "IntNavail", title: app.data["Availability"], type: "textarea", className: "col-xs-12 col-md-12" },
+            { id: "Exp", title: app.data["Experience"], type: "textarea", className: "col-xs-12 col-md-12" },
+            { id: "WorkHistory", title: app.data["Work History"], type: "textarea", className: "col-xs-12 col-md-12" }
           ]
         }
       ]
@@ -787,8 +786,8 @@ function getSubmissionSections() {
       rows: [
         {
           fields: [
-            { "id": "chkCV", "title": "", "type": "checkbox", "choices": config.chkCVAvailable.choices, "orientation": "horizontal", "className": "col-xs-12 col-md-12" },
-            { "id": "CV", "title": app.data["CV"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Resume", "html": '<section aria-label="File Upload Control Field for Resume" id="attachment"> <div class="dropzone" id="resume_dropzone" aria-label="Dropzone File Upload Control for Resume Section"></div></section>', "className": "col-xs-12 col-md-12" }
+            { id: "chkCV", title: "", type: "checkbox", choices: config.chkCVAvailable.choices, orientation: "horizontal", className: "col-xs-12 col-md-12" },
+            { id: "CV", title: app.data["CV"], type: "html", "aria-label": "Dropzone File Upload Control Field for Resume", html: '<section aria-label="File Upload Control Field for Resume" id="attachment"> <div class="dropzone" id="resume_dropzone" aria-label="Dropzone File Upload Control for Resume Section"></div></section>', className: "col-xs-12 col-md-12" }
           ]
         }]
     },
@@ -799,13 +798,13 @@ function getSubmissionSections() {
       rows: [
         {
           fields: [
-            { "id": "Images", "prehelptext": app.data["ImagesText"], "title": app.data["Images"], "type": "html", "aria-label": "Dropzone File Upload Control Field for Images", "html": '<section aria-label="File Upload Control Field for Images" id="attachment"> <div class="dropzone" id="image_dropzone" aria-label="Dropzone File Upload Control for Images Section"></div></section>', "className": "col-xs-12 col-md-12" },
-            { "id": "FooterText", "title": "", "type": "html", "html": app.data["FooterText1"], "className": "col-xs-12 col-md-12" },
-            { "id": "FooterText", "title": "", "type": "html", "html": app.data["FooterText2"], "className": "col-xs-12 col-md-12" },
-            { "id": "FooterText", "title": "", "type": "html", "html": app.data["FooterText3"], "className": "col-xs-12 col-md-12" },
+            { id: "Images", "prehelptext": app.data["ImagesText"], title: app.data["Images"], type: "html", "aria-label": "Dropzone File Upload Control Field for Images", html: '<section aria-label="File Upload Control Field for Images" id="attachment"> <div class="dropzone" id="image_dropzone" aria-label="Dropzone File Upload Control for Images Section"></div></section>', className: "col-xs-12 col-md-12" },
+            { id: "FooterText", title: "", type: "html", html: app.data["FooterText1"], className: "col-xs-12 col-md-12" },
+            { id: "FooterText", title: "", type: "html", html: app.data["FooterText2"], className: "col-xs-12 col-md-12" },
+            { id: "FooterText", title: "", type: "html", html: app.data["FooterText3"], className: "col-xs-12 col-md-12" },
             {
-              "id": "chkDeclaration", "title": "", "type": "checkbox", "choices": config.chkDeclaration.choices, "orientation": "horizontal", "className": "col-xs-12 col-md-12",
-              "validators": {
+              id: "chkDeclaration", title: "", type: "checkbox", choices: config.chkDeclaration.choices, orientation: "horizontal", className: "col-xs-12 col-md-12",
+              validators: {
                 callback: {
                   message: app.data["declarationValidation"],
                   callback: function (value, validator, $field) {
@@ -814,6 +813,7 @@ function getSubmissionSections() {
                 }
               }
             },
+            { id: "submitHelp", title: "", type: "html", html: app.data["SubmitText"], className: "col-xs-12 col-md-12" },
             {
               id: "actionBar",
               type: "html",
@@ -822,33 +822,13 @@ function getSubmissionSections() {
               //<button class="btn btn-success" id="printbtn"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>Print</button>
               //
             },
-            {
-              id: "successFailRow",
-              type: "html",
-              className: "col-xs-12 col-md-12",
-              html: `<div id="successFailArea" className="col-xs-12 col-md-12"></div>`
-            },
-            {
-              "id": "fid",
-              "type": "html",
-              "html": "<input type=\"text\" id=\"fid\" aria-label=\"Document ID\" aria-hidden=\"true\" name=\"fid\">",
-              "class": "hidden"
-            }, {
-              "id": "action",
-              "type": "html",
-              "html": "<input type=\"text\" id=\"action\" aria-label=\"Action\" aria-hidden=\"true\" name=\"action\">",
-              "class": "hidden"
-            }, {
-              "id": "createdBy",
-              "type": "html",
-              "html": "<input type=\"text\" id=\"createdBy\" aria-label=\"Record Created By\" aria-hidden=\"true\" name=\"createdBy\">",
-              "class": "hidden"
-            }, {
-              "id": "recCreated",
-              "type": "html",
-              "html": "<input type=\"text\" id=\"recCreated\" aria-label=\"Record Creation Date\" aria-hidden=\"true\" name=\"recCreated\">",
-              "class": "hidden"
-            }]
+            { id: "successFailRow", type: "html", className: "col-xs-12 col-md-12", html: `<div id="successFailArea" className="col-xs-12 col-md-12"></div>` },
+            { id: "fid", type: "html", html: "<input type=\"text\" id=\"fid\" aria-label=\"Document ID\" aria-hidden=\"true\" name=\"fid\">", "class": "hidden" },
+            { id: "action", type: "html", html: "<input type=\"text\" id=\"action\" aria-label=\"Action\" aria-hidden=\"true\" name=\"action\">", "class": "hidden" },
+            { id: "createdBy", type: "html", html: "<input type=\"text\" id=\"createdBy\" aria-label=\"Record Created By\" aria-hidden=\"true\" name=\"createdBy\">", "class": "hidden" },
+            { id: "recCreated", type: "html", html: "<input type=\"text\" id=\"recCreated\" aria-label=\"Record Creation Date\" aria-hidden=\"true\" name=\"recCreated\">", "class": "hidden" },
+            { id: "lstStatus", type: "html", html: "<input type=\"hidden\" aria-label=\"Record Status\" aria-hidden=\"true\" id=\"lstStatus\" name=\"lstStatus\">", "class": "hidden" }
+          ]
 
         }
       ]
@@ -860,14 +840,15 @@ function getAdminSectionsTop() {
   var section = [{
     rows: [{
       fields: [
-        {
-          "id": "lsteStatus",
+       {
+          "id": "lstStatus",
           "title": config.recStatus.title,
-          "type": "dropdown",
+          "required": true,
+          "type": "radio",
+          "orientation": "horizontal",
           "choices": config.recStatus.choices,
           "class": "col-xs-12 col-md-6"
-        }
-      ]
+        } ]
     }]
   }];
   return section;
@@ -908,7 +889,24 @@ function getAdminSectionsBottom() {
   ]
   return section;
 }
+function checkFileUploads(uploads) {
+  let queryString = "";
+  let binLoc = "";
 
+  if (uploads.length > 0) {
+    $.each(uploads, function (index, item) {
+      if (binLoc == "") {
+        binLoc = item.bin_id;
+      } else {
+        binLoc = binLoc + "," + item.bin_id;
+      }
+    })
+  }
+
+  if (binLoc != "") { queryString = "&keepFiles=" + binLoc };
+
+  return queryString;
+}
 CotForm.prototype.setData = function (data) {
   // STANDARD FIELD OPERATION
   function standardFieldOp(field, val) {

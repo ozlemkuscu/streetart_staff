@@ -196,7 +196,7 @@ callback({
             'emailFrom': 'wmDev@toronto.ca',
             'emailSubject': 'New Artist Profile',
             'emailBody': 'New Artist Profile has been received.',
-            'sendNotification':true
+            'sendNotification': true
           },
           'submit': {
             'done': 'Thank you! Your request has been received.',
@@ -305,6 +305,10 @@ callback({
     {
       "summary": "Open",
       "title": "View_Edit"
+    },
+    {
+      "summary": "Online Artist Application",
+      "title": "Form Title"
     },
     {
       "summary": "Preferred Name for Contact",
@@ -441,11 +445,14 @@ callback({
       "summary": "Any use of or reliance on this website, the contents of this website or the information provided through this website shall be at your sole risk. The City of Toronto does not endorse or sponsor any of the artists identified on this website. The City of Toronto provides the website as an open list to artists on an 'as is', 'as available', basis. Further, the City of Toronto does not represent and warrant that the website or its contents will be available or meet your requirements, that access will be uninterrupted, that there will be no delays, failures or errors or omissions or loss of transmitted information, that no viruses or other contaminating or destructive properties will be transmitted or that no damage will occur to your computer system due to use of the website.",
       "title": "FooterText3"
     }, {
-      "summary": "Your cannot submit without marking that you will not engage in illegal graffiti.",
+      "summary": "You cannot submit without marking that you will not engage in illegal graffiti.",
       "title": "declarationValidation"
     }, {
       "summary": "<strong>I acknowledge my profile will be removed from the City of Toronto Artist Directory if I am found to be engaging in illegal graffiti activities or charged for mischief related to graffiti vandalism.</strong>",
       "title": "DeclarationText"
+    }, {
+      "summary": "Please review/print your information before submitting.  Once you click submit, you won't be able to edit/print.",
+      "title": "SubmitText"
     }, {
       "summary": "File Attachment",
       "title": "File Attachment"

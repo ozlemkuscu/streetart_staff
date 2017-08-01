@@ -14,6 +14,8 @@ let groupMemberships = [];
 
 let tab = "Yes";
 let form_id = "streetart";
+let repo = "streetart";
+
 let config;
 $(document).ready(function () {
   loadVariables();
@@ -184,7 +186,8 @@ function listSubmissions(status, filter, repo, target) {
       dateFormat: config.dateFormatView,
       columnDefs: [
         { "targets": 0, data: null, defaultContent: '', title: '<span class="sr-only">' + app.data["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
-        { "targets": 1, data: 'lsteStatus', "title": config.recStatus.title, defaultContent: '', sortOrder: "des" },
+        { "targets": 1, data: null, defaultContent: '', title: '<span class="sr-only">' + "Delete" + '</span>', "defaultContent": `<glyphicon glyphicon-remove class="btn btn-danger btn-remove-report"><span title="DElete" class="glyphicon glyphicon-remove"></span></a>` },
+        //   { "targets": 1, data: 'lsteStatus', "title": config.recStatus.title, defaultContent: '', sortOrder: "des" },
         {
           "targets": 2, defaultContent: '', title: app.data["Submission Date Column"], type: 'date',
           data: function (row, type, val, meta) {
@@ -254,8 +257,8 @@ function deleteReport(fid, payload, modal, repo) {
   }).fail(function () {
     hasher.setHash('?alert=danger&msg=delete.fail&status=' + tab + '&ts=' + new Date().getTime());
   }).always(function () {
-    modal.modal('hide');
-    $(".btn").removeAttr('disabled').removeClass('disabled');
+  //  modal.modal('hide');
+   // $(".btn").removeAttr('disabled').removeClass('disabled');
   });
 }
 function frontPage(query, repo) {
@@ -448,6 +451,13 @@ function init() {
     hasher.setHash($(this).parents('tr').attr('data-id') + '?ts=' + new Date().getTime() + '&mode=read&repo=' + config.default_repo);
   });
 
+  // Delete button
+  $("#maincontent").on('click', '.btn-remove-report', function () {
+    var payload = JSON.stringify({
+      'status': config.status.Deleted
+    });
+    deleteReport($("#fid"), payload, null, repo);
+  });
 
   // Set action parameter value based on button clicked
   $("#maincontent").on("click", ".btn-save, .btn-notify, .btn-submit, .btn-approve, .btn-reject", function () {
