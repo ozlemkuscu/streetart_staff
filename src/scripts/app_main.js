@@ -1,4 +1,8 @@
-const configURL = "//www1.toronto.ca/static_files/WebApps/CommonComponents/streetart/JSONFeed.js";
+//const configURLC2 = "//www1.toronto.ca/static_files/WebApps/CommonComponents/streetart/JSONFeed.js"; //opentext link
+const configURLC2 = "https://contrib0.wp.intra.dev-toronto.ca/app_content/streetart_staff_config/"; //wordpress link
+const configURLC3 = "https://was-intra-sit.toronto.ca/c3api_config/v2/ConfigService.svc/ConfigSet('streetart/JSONFeed.js')/ConfigContent"; //c3api link
+let form_id = "streetart";
+
 const app = new cot_app("StreetARToronto Artist Directory", {
   hasFooter: true,
   hasContentBottom: true,
@@ -11,37 +15,49 @@ const app = new cot_app("StreetARToronto Artist Directory", {
 let httpHost;
 let oLogin;
 let groupMemberships = [];
-
 let tab = "Yes";
-let form_id = "streetart";
-let repo = "streetart";
 
-let config;
+let config = void 0;
+let artistData;
+
 $(document).ready(function () {
   loadVariables();
 });
-
 function loadVariables() {
+  // Loads the config parameters from the defined config URL file  
   $.ajax({
-    url: configURL,
+    url: configURLC2, //'/scripts/JSONFeed.json'
     type: "GET",
     cache: "true",
     dataType: "jsonp",
     jsonpCallback: "callback",
     success: function (data) {
-      $.each(data.items, function (i, item) { app.data[item.title] = item.summary; });
-      config = app.data.config;
-      renderCFrame();
+      config = data;
+      renderApp();
     },
     error: function () {
-      alert("Error: The application was unable to load data.")
+      console.log(configURLC2 + " failed. Trying alternative URL for configuration : " + configURLC3);
+      $.ajax({
+        url: configURLC3,
+        type: "GET",
+        cache: "true",
+        dataType: "jsonp",
+        jsonpCallback: "callback",
+        success: function (data) {
+          config = data;
+          renderApp();
+        },
+        error: function () {
+          alert("Error: The application was unable to load data. Please contact system administrator.");
+        }
+      })
     }
-  });
+  })
 }
-function renderCFrame() {
+function renderApp() {
   //ADD ALL THE LINKS YOU WANT TO THE APPLICATION BREADCRUMB
   httpHost = detectHost();
-  app.setBreadcrumb(app.data["breadcrumbtrail"]);
+  app.setBreadcrumb(config["breadcrumbtrail"]);
   //INCLUDE ANY NECCESSARY JS/CSS LIBRARIES
   //FORMS TYPICALLY USE AT LEAST THE FOLLOWING 3 LIBRARIES
   app.includeLogin = app.includeDatePicker = app.includeRangePicker = app.includeFormValidation = app.includePlaceholders = app.includeMultiSelect = true;
@@ -62,24 +78,16 @@ function detectHost() {
       return 'dev';
   }
 }
-// Page authorization based on user cookie and group permissions
 function auth() {
-  // console.log("in auth");
-  // This code is for extending cookie Expiry Time as long as the user interacts with server
-  /*
-  try {
-    oLogin.session.expireIn(config.api.timeout);
-  } catch (err) {
-    // do nothing, just continue the code block
-  }
-*/
+  // Page authorization based on user cookie and group permissions
+
   if (!oLogin.isLoggedIn()) {
     //  console.log("user not logged in");
     $("#app-content-top").empty().html(config.auth.login);
-    $("#view_pane").empty();
-    $("#app-content-right").show();
-    //oLogin.setUserName();
+    //  $("#view_pane").empty();
+    //  $("#app-content-right").show();
     scroll(0, 0);
+    oLogin.showLogin();
     return false;
   } else if (groupMemberships.length < 1) {
     $("#app-content-top").empty().html(config.auth.group);
@@ -95,6 +103,14 @@ function auth() {
       sessionCheck(function (textStatus, data) {
         // success
         $("#app-content-right").hide();
+
+        // This code is for extending cookie Expiry Time as long as the user interacts with server
+        try {
+          oLogin.session.expireIn(config.api.timeout);
+        } catch (err) {
+          // do nothing, just continue the code block
+        }
+
         sessionCheckValid = true;
       }, function (textStatus, errorThrown) {
         // failure
@@ -157,23 +173,25 @@ function listSubmissions(status, filter, repo, target) {
     let viewParam2 = "";
     if (status == "All") {
       viewParam = config.status[status];
-    } else if (status == "Yes" || status == "Submitted" || status == "Approved") {
-      viewParam = config.status[status + 'App'];
     } else if (status == "Search") {
       viewParam = "Result";
+    } else {//if (status == "Yes" || status == "Submitted" || status == "Approved") {
+      viewParam = getViewtitle(status);
     }
 
     $("#viewtitle").html(viewParam + " Submissions " + viewParam2);
+
+    if (status == "Live") {
+      status = "APR";
+    }
 
     // build retrieve parameters
     let json = {};
     json.repo = repo;
     json.status = status == "Search" ? "" : (status == "All" ? "" : status);
     //  json.filter = filter;
-    json.filter = (status == "All" ? "status~(Yes)|(Submitted)|(Approved)|(Denied)|(Invalid)" : filter);
-
+    json.filter = (status == "All" ? "status~(Yes)|(APR)|(Approved)|(Rejected)|(Live)|(Invalid)|(Archived)|(Pending)" : filter);
     let args = "";
-
     //initialize new cc_retrieve_view (pass in constructor)
     // build cc_retrieve_view constructor
     args = {
@@ -185,27 +203,27 @@ function listSubmissions(status, filter, repo, target) {
       addFooter: true,
       dateFormat: config.dateFormatView,
       columnDefs: [
-        { "targets": 0, data: null, defaultContent: '', title: '<span class="sr-only">' + app.data["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
-        { "targets": 1, data: null, defaultContent: '', title: '<span class="sr-only">' + "Delete" + '</span>', "defaultContent": `<glyphicon glyphicon-remove class="btn btn-danger btn-remove-report"><span title="DElete" class="glyphicon glyphicon-remove"></span></a>` },
-        //   { "targets": 1, data: 'lsteStatus', "title": config.recStatus.title, defaultContent: '', sortOrder: "des" },
+        { "targets": 0, data: null, defaultContent: '', title: '<span class="sr-only">' + config["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
+        //{ "targets": 1, data: null, defaultContent: '', title: '<span class="sr-only">' + "Delete" + '</span>', "defaultContent": `<glyphicon glyphicon-remove class="btn btn-danger btn-remove-report"><span title="DElete" class="glyphicon glyphicon-remove"></span></a>` },
         {
-          "targets": 2, defaultContent: '', title: app.data["Submission Date Column"], type: 'date',
+          "targets": 1, defaultContent: '', title: config["Submission Date Column"], type: 'date',
           data: function (row, type, val, meta) {
             if (row.recCreated !== "") {
-              return moment(new Date(row.recCreated)).format(config.dateTimeFormat3);
+              return moment(new Date(row.recCreated)).format(config.dateTimeFormat);
             }
-            return moment(row.created).format(config.dateTimeFormat3);
+            return moment(row.created).format(config.dateTimeFormat);
           }
         },
-        { "targets": 3, data: function (row, type, val, meta) { return (row.FirstName + " " + row.LastName); }, defaultContent: '', title: app.data["Name"] },
-        { "targets": 4, data: 'Address', "title": app.data["AddressColumn"], defaultContent: '', sortOrder: "des" },
-        { "targets": 5, data: 'City', "title": app.data["City"], defaultContent: '', sortOrder: "des" },
-        { "targets": 6, data: 'Province', "title": app.data["Province"], defaultContent: '', sortOrder: "des" },
-        { "targets": 7, data: 'PostalCode', "title": app.data["Postal Code"], defaultContent: '', sortOrder: "des" },
-        { "targets": 8, data: 'PrimaryPhone', "title": app.data["Primary Phone"], defaultContent: '', sortOrder: "des" },
-        { "targets": 9, data: 'OtherPhone', "title": app.data["Other Phone"], defaultContent: '', sortOrder: "des" },
-        { "targets": 10, data: 'Email', title: app.data["Email"], defaultContent: '', sortOrder: "des" },
-        { "targets": 11, data: 'ContactMethod', "title": app.data["preferredMethodColumn"], defaultContent: '', sortOrder: "des" },
+        { "targets": 2, data: function (row, type, val, meta) { return (row.FirstName + " " + row.LastName); }, defaultContent: '', title: config["Name"] },
+        { "targets": 3, data: 'Address', "title": config["AddressColumn"], defaultContent: '', sortOrder: "des" },
+        { "targets": 4, data: 'City', "title": config["City"], defaultContent: '', sortOrder: "des" },
+        { "targets": 5, data: 'lstStatus', "title": config.recStatus.title, defaultContent: '', sortOrder: "des" },
+        { "targets": 6, data: 'Province', "title": config["Province"], defaultContent: '', sortOrder: "des" },
+        { "targets": 7, data: 'PostalCode', "title": config["Postal Code"], defaultContent: '', sortOrder: "des" },
+        { "targets": 8, data: 'PrimaryPhone', "title": config["Primary Phone"], defaultContent: '', sortOrder: "des" },
+        { "targets": 9, data: 'OtherPhone', "title": config["Other Phone"], defaultContent: '', sortOrder: "des" },
+        { "targets": 10, data: 'Email', title: config["Email"], defaultContent: '', sortOrder: "des" },
+        { "targets": 11, data: 'ContactMethod', "title": config["preferredMethodColumn"], defaultContent: '', sortOrder: "des" },
       ]
     }
 
@@ -257,9 +275,13 @@ function deleteReport(fid, payload, modal, repo) {
   }).fail(function () {
     hasher.setHash('?alert=danger&msg=delete.fail&status=' + tab + '&ts=' + new Date().getTime());
   }).always(function () {
-  //  modal.modal('hide');
-   // $(".btn").removeAttr('disabled').removeClass('disabled');
+    //  modal.modal('hide');
+    // $(".btn").removeAttr('disabled').removeClass('disabled');
   });
+}
+function homePage() {
+  let lastView = $.cookie(encodeURIComponent(config.default_repo) + '.lastHash');
+  hasher.setHash((lastView ? lastView : 'All' + '?ts=' + new Date().getTime() + '&status='));
 }
 function frontPage(query, repo) {
   if (auth()) {
@@ -325,6 +347,42 @@ function newPage(query) {
     });
   }
 }
+function getViewtitle(statusVal) {
+  var viewtitleVal = "";
+  /*
+         'DraftApp': 'New',
+         'SubmittedApp': 'Pending',
+         'ApprovedApp': 'Approved',
+         'DeniedApp': 'Denied',
+         'InvalidApp': 'Invalid Requests'
+         */
+  switch (statusVal) {
+    case config.status.Draft:
+      viewtitleVal = config.status.DraftApp;
+      break;
+    case config.status.Pending:
+      viewtitleVal = config.status.SubmittedApp;
+      break;
+    case config.status.Approved:
+      viewtitleVal = config.status.ApprovedApp;
+      break;
+    case config.status.Rejected:
+      viewtitleVal = config.status.RejectedApp;
+      break;
+    case config.status.Live || config.status.LiveApp:
+      viewtitleVal = config.status.LiveApp;
+      break;
+    case config.status.Archived:
+      viewtitleVal = config.status.ArchivedApp;
+      break;
+    case config.status.Invalid:
+      viewtitleVal = config.status.InvalidTitle;
+      break;
+    default:
+  }
+
+  return viewtitleVal;
+}
 function viewEditPage(id, query) {
   let repo = query.repo ? query.repo : config.default_repo;
   let docMode = query.mode ? query.mode : "";
@@ -355,7 +413,7 @@ function viewEditPage(id, query) {
       $.getJSON(config.httpHost.app[httpHost] + config.api.get + repo + '/' + id + '?sid=' + getCookie(cookie_SID))
         .done(function (data) {
           let payload = JSON.parse(data.payload);
-          $("#viewtitle").html((data.status === 'Yes' ? 'New' : config.status[data.status + 'App']) + ' Submission: ' + payload.FirstName + " " + payload.LastName); //  + config.timeOutMsg
+          $("#viewtitle").html(getViewtitle(data.status) + ' Submission');
           loadForm("#viewedit-form", payload, id, data.status, form_id, config.default_repo, data, docMode);
         })
         .fail(function (textStatus, error) {
@@ -368,72 +426,56 @@ function viewEditPage(id, query) {
 }
 // Setup hasher
 function parseHash(newHash) {
+  if (newHash !== "") { $.cookie(encodeURIComponent(config.default_repo) + '.lastHash', newHash, { expires: 7 }); }
   crossroads.parse(newHash);
 }
 function initFrontPage(data) {
   // configuration fields, should be same as access configuration values
-  let cfg_groupMemberships = config.members.app_admin.split(',');
-  $.each(cfg_groupMemberships, function (i, group) {
-    // check if the logged in username is also in groups list
-    // if so put it in the groupmemberships values
-    if (group === oLogin.username) {
-      groupMemberships.push(oLogin.username);
-    }
-  })
+  let cfg_groupMemberships = config.members.app_admin;
 
-  // check if the user is in one of the application groups
-  // values taken from user cookie
-  let groupsStr = oLogin.groups;
-  let groupsIndexO = groupsStr.indexOf('o=');
-  let groupsArray = null;
-  if (groupsIndexO > -1) {
-    let groups = groupsStr.substring(groupsIndexO + 2);
-    groupsArray = groups.split(',');
-  }
-
-  // Save group names based on user's group permissions
-  if (data && groupsArray) {
-    for (let name in cfg_groupMemberships) {
-      if (groupsArray.indexOf(cfg_groupMemberships[name]) !== -1) {
-        groupMemberships.push(cfg_groupMemberships[name]);
+  if (cfg_groupMemberships.length > 0) {
+    $.each(cfg_groupMemberships, function (i, group) {
+      // check if the logged in username is also in groups list
+      // if so put it in the groupmemberships values
+      if (group === oLogin.username) {
+        groupMemberships.push(oLogin.username);
       }
-    }
+    })
 
-    hasher.initialized.add(parseHash); // Parse initial hash
-    hasher.changed.add(parseHash); // Parse hash changes
-    hasher.init(); // Start listening for history change
+    // check if the user is in one of the application groups
+    // values taken from user cookie
+    let groupsStr = oLogin.groups;
+    // Save group names based on user's group permissions
+    if (data && (groupsStr != "")) {
+      for (let name in cfg_groupMemberships) {
+        if (groupsStr.indexOf(cfg_groupMemberships[name]) !== -1) {
+          groupMemberships.push(cfg_groupMemberships[name]);
+        }
+      }
+
+      hasher.initialized.add(parseHash); // Parse initial hash
+      hasher.changed.add(parseHash); // Parse hash changes
+      hasher.init(); // Start listening for history change
+    }
   }
 }
 function init() {
   crossroads.ignoreState = true;
+  // crossroads.addRoute(':?query:', homePage);
   crossroads.addRoute('/:?query:', frontPage);
   crossroads.addRoute('/new:?query:', newPage);
   crossroads.addRoute('/{id}:?query:', viewEditPage);
 
-  oLogin = new cot_login({ ccRoot: config.httpHost.app[httpHost], welcomeSelector: "#app-content-right", onLogin: initFrontPage, appName: config.default_repo });
-
-
-  // Create New Entry button
-  $("#maincontent").on('click', '#btn-createReport', function () {
-    if (auth()) {
-      hasher.setHash('new?ts=' + new Date().getTime());
-    }
+  oLogin = new cot_login({
+    ccRoot: config.httpHost.app[httpHost],
+    welcomeSelector: "#app-content-right",
+    onLogin: initFrontPage,
+    appName: config.default_repo
   });
 
-  // View Submissions button
-  $("#maincontent").on('click', '#btn-viewSubmissions', function () {
-    hasher.setHash('?status=' + tab + '&ts=' + new Date().getTime());
-  });
-
-  // Print button
-  $("#maincontent").on('click', '#btn-print', function () {
-    window.print();
-  });
-
-  // Export to CSV button
+  $("#maincontent").on('click', '#btn-print', function () { window.print(); });
   $("#maincontent").on('click', '#btn-exportCsv', function () { });
 
-  // Navigation tab links by report status
   $("#maincontent").on('click', '.tablink', function () {
     hasher.setHash('?status=' + $(this).attr('data-id') + '&ts=' + new Date().getTime());
   });
@@ -451,39 +493,17 @@ function init() {
     hasher.setHash($(this).parents('tr').attr('data-id') + '?ts=' + new Date().getTime() + '&mode=read&repo=' + config.default_repo);
   });
 
-  // Delete button
-  $("#maincontent").on('click', '.btn-remove-report', function () {
-    var payload = JSON.stringify({
-      'status': config.status.Deleted
-    });
-    deleteReport($("#fid"), payload, null, repo);
+  // Edit button
+  $("#maincontent").on('click', '.edit-action', function () {
+    hasher.setHash($('#fid').val() + '?ts=' + new Date().getTime() + '&mode=edit&repo=' + config.default_repo);
   });
 
   // Set action parameter value based on button clicked
-  $("#maincontent").on("click", ".btn-save, .btn-notify, .btn-submit, .btn-approve, .btn-reject", function () {
+  $("#maincontent").on("click", ".btn-save, .btn-notify, .btn-submit", function () {
     $("#action").val($(this).attr('id'));
   });
 
-  $(window).scroll(function () {
-    if ($(this).scrollTop() > 50) {
-      $("#back-to-top").fadeIn();
-    } else {
-      $("#back-to-top").fadeOut();
-    }
-  });
-
-  // Scroll to top
-  $("#back-to-top").click(function () {
-    $("#back-to-top").tooltip('hide');
-    $("html, body").animate({
-      scrollTop: 0
-    }, 'fast');
-    return false;
-  });
-
-  $("#back-to-top").tooltip('show');
 }
-
 // Sort submissions in order of last modified date with most recent first
 function sortSubmissionsByDate(data) {
   data.sort(function (a, b) {
@@ -491,4 +511,3 @@ function sortSubmissionsByDate(data) {
     return new Date(b.created).getTime() - new Date(a.created).getTime();
   });
 }
-

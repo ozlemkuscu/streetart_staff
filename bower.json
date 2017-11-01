@@ -6,7 +6,7 @@
   ],
   "private": true,
   "dependencies": {
-    "core": "https://github.com/CityofToronto/corejs.git#3.0.0",
+    "core": "https://github.com/CityofToronto/corejs.git#3.x.x",
     "mustache.js": "mustache#^2.3.0",
     "signals.js": "signals#^1.0.0",
     "crossroads.js": "crossroads#^0.12.2",
@@ -20,7 +20,7 @@
     "Stuk/jszip": "Stuk/jszip",
     "pdfmake": "pdfmake#^0.1.8",
     "datatables-datetime-moment": "https://github.com/Marchrius/datatables-datetime-moment.git#^1.10.13",
-    "dropzone": "dropzone#^4.3.0",
+    "dropzone": "dropzone#^5.1.1",
     "font-awesome": "font-awesome#^4.7.0"
   }
 }

@@ -1,0 +1,246 @@
+<section id="admininterface">
+  <div calss="row">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <!--button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#app_Navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button-->
+          <span id="viewtitle" class="navbar-brand">Submissions</span>
+        </div>
+        <div class="collapse navbar-collapse" id="app_Navbar">
+
+          <ul class="nav navbar-nav navbar-right" style="overflow:initial">
+            <li>
+              <div id="custom-search-input" style="width:200px !important">
+                <div class="input-group">
+                  <div class="form-group has-feedback has-clear">
+                    <input id="admin_search" aria-label="keyword search" class="form-control" type="text" placeholder="keywordsearch" name="admin_search">
+                    <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+                  </div>
+                  <span class="input-group-btn">
+                        <button id="btn-adminSearch" aria-label="global search" data-id="" class="btn btn-info btn-sm" type="button">
+                            <i class="glyphicon glyphicon-search" title="Global Search"></i>
+                        </button>
+                    </span>
+                </div>
+              </div>
+
+
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="artists_list">StreetARToronto Artist Database
+      <table id="artiststable" class="licious" style="display: table;">
+        <thead>
+          <tr>
+            <th>Artist Profiles</th>
+          </tr>
+          <tr>Created with the purpose of profiling local Toronto artists who are interested in working on graffiti art and street
+            art projects, the StreetARToronto Artist Database serves to foster connections between these artists and individuals
+            or business that have a project in mind. </tr>
+        </thead>
+        <tbody>
+
+          {{#artists}}
+          <tr id={{fid}}>
+            <td>
+              <div>
+                <div class="detailLine col-xs-12 col-sm-12">
+                  <div class="buildingname">
+                    <h3 class="lic_restname"><a class="showdetail" data-toggle="tooltip" data-placement="bottom" title="Artist Profile for " {{FirstName}}
+                        {{LastName}} href="#" {{fid}} data-doc-id={{fid}}>{{FirstName}} {{LastName}} (View Profile)</a></h3>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                      <!--div class="lic_address">{{OrganizationDescription}}</div-->
+                      <div class="lic_address">{{displayProfile}}</div>
+                      <br>
+                      <!--div><strong>Days Open</strong><br>Saturday: 10:00 am - 5:00 pm<br>Sunday: 10:00 am - 5:00 pm
+                        <p class="icons"><img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="New to Doors Open Icon"
+                            src="/resources/doors_open_buildings/img/newparticipanticon.png" data-original-title="New to Doors Open">
+                          <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Washroom Icon" src="/resources/doors_open_buildings/img/washroomsicon.png"
+                            data-original-title="Washroom"></p>
+                      </div-->
+                    </div>
+                    <div class="col-xs-12 col-sm-12">
+                      <div><strong>Photos</strong></div>
+                    </div>
+                  </div>
+                </div>
+                <!--end col-sm-10-->
+              </div>
+            </td>
+          </tr>
+          {{/artists}}
+    </div>
+    </tbody>
+    </table>
+    <table id="doorsopenlisttable" class="licious" style="display: table;">
+      <thead>
+        <tr>
+          <th>Doors Open Toronto Building List</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="doorsopenlisttablerow0">
+          <td>
+            <div>
+              <div class="hidden-print hidden-xs col-sm-2"><a class="showdetail" href="#C91D0BD848F39F76852580BF00771103" data-doc-id="C91D0BD848F39F76852580BF00771103"><img data-toggle="tooltip" data-placement="bottom" title="Read more information about this item..." alt="Image: 159 Manning" class="buildingImg img-responsive img-thumbnail" src="//www1.toronto.ca/City%20Of%20Toronto/Economic%20Development%20&amp;%20Culture/Special%20Events%20Office/Doors%20Open/Programming%20Photos/Buildings/159_Manning_350px.jpg"></a></div>
+              <div class="detailLine col-xs-12 col-sm-10">
+                <div class="buildingname">
+                  <h3 class="lic_restname"><a class="showdetail" data-toggle="tooltip" data-placement="bottom" title="View Doors Open Building Details for 159 Manning"
+                      href="#C91D0BD848F39F76852580BF00771103" data-doc-id="C91D0BD848F39F76852580BF00771103">159 Manning</a></h3>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7">
+                    <div class="lic_address">159 Manning Ave.<br>416-523-7223</div><br>
+                    <div><strong>Days Open</strong><br>Saturday: 10:00 am - 5:00 pm<br>Sunday: 10:00 am - 5:00 pm
+                      <p class="icons"><img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="New to Doors Open Icon"
+                          src="/resources/doors_open_buildings/img/newparticipanticon.png" data-original-title="New to Doors Open">
+                        <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Washroom Icon" src="/resources/doors_open_buildings/img/washroomsicon.png"
+                          data-original-title="Washroom"></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-5">
+                    <div><strong>Architecture</strong><br>Built 1930-1939<br>Style: Post-Modern (1945+)<br>Building Type: Arts
+                      &amp; Cultural Centre</div>
+                  </div>
+                </div>
+              </div>
+              <!--end col-sm-10-->
+            </div>
+          </td>
+        </tr>
+        <tr id="doorsopenlisttablerow1">
+          <td>
+            <div>
+              <div class="hidden-print hidden-xs col-sm-2"><a class="showdetail" href="#616CE8D355145252852580D1006B8973" data-doc-id="616CE8D355145252852580D1006B8973"><img data-toggle="tooltip" data-placement="bottom" title="Read more information about this item..." alt="Image: 401 Richmond Street West" class="buildingImg img-responsive img-thumbnail" src="//www1.toronto.ca/City%20Of%20Toronto/Economic%20Development%20&amp;%20Culture/Special%20Events%20Office/Doors%20Open/Programming%20Photos/Buildings/401_Richmond_Street_West_350px.jpg"></a></div>
+              <div class="detailLine col-xs-12 col-sm-10">
+                <div class="buildingname">
+                  <h3 class="lic_restname"><a class="showdetail" data-toggle="tooltip" data-placement="bottom" title="View Doors Open Building Details for 401 Richmond Street West"
+                      href="#616CE8D355145252852580D1006B8973" data-doc-id="616CE8D355145252852580D1006B8973">401 Richmond Street West</a></h3>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7">
+                    <div class="lic_address">401 Richmond St. W.<br>416-595-5900</div><br>
+                    <div><strong>Days Open</strong><br>Saturday: 10:00 am - 5:00 pm<br>Sunday: 10:00 am - 5:00 pm
+                      <p class="icons"><img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Family Friendly Icon"
+                          src="/resources/doors_open_buildings/img/familyfriendlyicon.png" data-original-title="Family Friendly">
+                        <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Washroom Icon" src="/resources/doors_open_buildings/img/washroomsicon.png"
+                          data-original-title="Washroom"><img data-toggle="tooltip" data-placement="bottom"
+                          title="" class="icon" alt="Fully Accessible Icon" src="/resources/doors_open_buildings/img/fullyaccessibleicon.png"
+                          data-original-title="Fully Accessible"></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-5">
+                    <div><strong>Architecture</strong><br>Built 1890-1899<br>Style: Commercial/Industrial<br>Building Type: Arts
+                      &amp; Cultural Centre</div>
+                  </div>
+                </div>
+              </div>
+              <!--end col-sm-10-->
+            </div>
+          </td>
+        </tr>
+        <tr id="doorsopenlisttablerow2">
+          <td>
+            <div>
+              <div class="hidden-print hidden-xs col-sm-2"><a class="showdetail" href="#53B49BA14381CF6E852580BF0077E0DF" data-doc-id="53B49BA14381CF6E852580BF0077E0DF"><img data-toggle="tooltip" data-placement="bottom" title="Read more information about this item..." alt="Image: Aga Khan Museum" class="buildingImg img-responsive img-thumbnail" src="//www1.toronto.ca/City%20Of%20Toronto/Economic%20Development%20&amp;%20Culture/Special%20Events%20Office/Doors%20Open/Programming%20Photos/Buildings/Aga_Khan_Museum_350px.jpg"></a></div>
+              <div class="detailLine col-xs-12 col-sm-10">
+                <div class="buildingname">
+                  <h3 class="lic_restname"><a class="showdetail" data-toggle="tooltip" data-placement="bottom" title="View Doors Open Building Details for Aga Khan Museum"
+                      href="#53B49BA14381CF6E852580BF0077E0DF" data-doc-id="53B49BA14381CF6E852580BF0077E0DF">Aga Khan Museum</a></h3>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7">
+                    <div class="lic_address">77 Wynford Dr.<br>416-646-4677</div><br>
+                    <div><strong>Days Open</strong><br>Saturday: 10:00 am - 5:00 pm<br>Sunday: 10:00 am - 5:00 pm
+                      <p class="icons"><img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Family Friendly Icon"
+                          src="/resources/doors_open_buildings/img/familyfriendlyicon.png" data-original-title="Family Friendly">
+                        <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Paid Parking Icon" src="/resources/doors_open_buildings/img/payparkingicon.png"
+                          data-original-title="Paid Parking"><img data-toggle="tooltip" data-placement="bottom"
+                          title="" class="icon" alt="Fully Accessible Icon" src="/resources/doors_open_buildings/img/fullyaccessibleicon.png"
+                          data-original-title="Fully Accessible"></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-5">
+                    <div><strong>Architecture</strong><br>Built 2010-2017<br>Style: Contemporary (1995-Present)<br>Building Type:
+                      Arts &amp; Cultural Centre</div>
+                  </div>
+                </div>
+              </div>
+              <!--end col-sm-10-->
+            </div>
+          </td>
+        </tr>
+        <tr id="doorsopenlisttablerow3">
+          <td>
+            <div>
+              <div class="hidden-print hidden-xs col-sm-2"><a class="showdetail" href="#03889009405A3006852580BF00658088" data-doc-id="03889009405A3006852580BF00658088"><img data-toggle="tooltip" data-placement="bottom" title="Read more information about this item..." alt="Image: Alumnae Theatre" class="buildingImg img-responsive img-thumbnail" src="//www1.toronto.ca/City%20Of%20Toronto/Economic%20Development%20&amp;%20Culture/Special%20Events%20Office/Doors%20Open/Programming%20Photos/Buildings/Alumnae_Theatre_350px.jpg"></a></div>
+              <div class="detailLine col-xs-12 col-sm-10">
+                <div class="buildingname">
+                  <h3 class="lic_restname"><a class="showdetail" data-toggle="tooltip" data-placement="bottom" title="View Doors Open Building Details for Alumnae Theatre"
+                      href="#03889009405A3006852580BF00658088" data-doc-id="03889009405A3006852580BF00658088">Alumnae Theatre</a></h3>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7">
+                    <div class="lic_address">70 Berkeley St.<br>416-364-4170</div><br>
+                    <div><strong>Days Open</strong><br>Saturday: 10:00 am - 5:00 pm<br>Sunday: 10:00 am - 5:00 pm
+                      <p class="icons"><img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Washroom Icon" src="/resources/doors_open_buildings/img/washroomsicon.png"
+                          data-original-title="Washroom">
+                        <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Partially Accessible Icon" src="/resources/doors_open_buildings/img/partiallyaccessibleicon.png"
+                          data-original-title="Partially Accessible"></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-5">
+                    <div><strong>Architecture</strong><br>Built 1900-1910<br>Style: Edwardian (1900-1916)<br>Building Type: Arts
+                      &amp; Cultural Centre</div>
+                  </div>
+                </div>
+              </div>
+              <!--end col-sm-10-->
+            </div>
+          </td>
+        </tr>
+        <tr id="doorsopenlisttablerow4">
+          <td>
+            <div>
+              <div class="hidden-print hidden-xs col-sm-2"><a class="showdetail" href="#D24685A7BF152655852580BC005881F3" data-doc-id="D24685A7BF152655852580BC005881F3"><img data-toggle="tooltip" data-placement="bottom" title="Read more information about this item..." alt="Image: Anglican Church of St. John the Baptist (Norway)" class="buildingImg img-responsive img-thumbnail" src="//www1.toronto.ca/City%20Of%20Toronto/Economic%20Development%20&amp;%20Culture/Special%20Events%20Office/Doors%20Open/Programming%20Photos/Buildings/The_Anglican_Church_of_St-John_350px.jpg"></a></div>
+              <div class="detailLine col-xs-12 col-sm-10">
+                <div class="buildingname">
+                  <h3 class="lic_restname"><a class="showdetail" data-toggle="tooltip" data-placement="bottom" title="View Doors Open Building Details for Anglican Church of St. John the Baptist (Norway)"
+                      href="#D24685A7BF152655852580BC005881F3" data-doc-id="D24685A7BF152655852580BC005881F3">Anglican Church of St. John the Baptist (Norway)</a></h3>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7">
+                    <div class="lic_address">470 Woodbine Ave.<br>416-691-4560</div><br>
+                    <div><strong>Days Open</strong><br>Saturday: 10:00 am - 5:00 pm<br>Sunday: 12:30 am - 5:00 pm
+                      <p class="icons"><img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="New to Doors Open Icon"
+                          src="/resources/doors_open_buildings/img/newparticipanticon.png" data-original-title="New to Doors Open">
+                        <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Washroom Icon" src="/resources/doors_open_buildings/img/washroomsicon.png"
+                          data-original-title="Washroom"><img data-toggle="tooltip" data-placement="bottom"
+                          title="" class="icon" alt="Free Parking Icon" src="/resources/doors_open_buildings/img/freeparkingicon.png"
+                          data-original-title="Free Parking">
+                        <img data-toggle="tooltip" data-placement="bottom" title="" class="icon" alt="Fully Accessible Icon" src="/resources/doors_open_buildings/img/fullyaccessibleicon.png"
+                          data-original-title="Fully Accessible"></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-5">
+                    <div><strong>Architecture</strong><br>Built 1890-1899<br>Style: Victorian (1840-1900)<br>Building Type: Faith
+                      &amp; Worship Centre</div>
+                  </div>
+                </div>
+              </div>
+              <!--end col-sm-10-->
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</section>

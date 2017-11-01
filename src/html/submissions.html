@@ -19,7 +19,7 @@
               <ul class="dropdown-menu" role="menu">
                 <li id="tabAll" role="presentation"><a href="#listAll" class="tablink" data-id="All" data-toggle="tab" role="tab" aria-controls="listAll">All</a></li> 
                 <li id="tabYes" role="presentation"><a href="#listYes" class="tablink" data-id="Yes" data-toggle="tab" role="tab" aria-controls="listYes">{{status.YesApp}}</a></li>
-                <li id="tabSubmitted" role="presentation"><a href="#listSubmitted" class="tablink" data-id="Submitted" data-toggle="tab" role="tab" aria-controls="listSubmitted">{{status.SubmittedApp}}</a></li>
+                <li id="tabSubmitted" role="presentation"><a href="#listPending" class="tablink" data-id="Pending" data-toggle="tab" role="tab" aria-controls="listPending">{{status.SubmittedApp}}</a></li>
                 <li id="tabApproved" role="presentation"><a href="#listApproved" class="tablink" data-id="Approved" data-toggle="tab" role="tab" aria-controls="listApproved">{{status.ApprovedApp}}</a></li>
                 <li id="tabLive" role="presentation"><a href="#listLive" class="tablink" data-id="Live" data-toggle="tab" role="tab" aria-controls="listLive">{{status.LiveApp}}</a></li>
                 <li id="tabRejected" role="presentation"><a href="#listRejected" class="tablink" data-id="Rejected" data-toggle="tab" role="tab" aria-controls="listRejected">{{status.RejectedApp}}</a></li>
@@ -27,12 +27,11 @@
                 <li id="tabInvalid" role="presentation"><a href="#listInvalid" class="tablink" data-id="Invalid" data-toggle="tab" role="tab" aria-controls="listInvalid">{{status.InvalidApp}}</a></li>
                </ul>
             </li>
-            <!--li><a id="btn-createReport" tabindex="0" role="link"><span class="glyphicon glyphicon-pencil"></span>{{button.createNewEntry}}</a></li-->
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Export
                 <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li id="tabPDF" role="presentation"><a id="tabExportPDF" href="#" class="tabexport"><i class="fa fa-file-pdf-o"></i> PDF</a></li>
+                <!--li id="tabPDF" role="presentation"><a id="tabExportPDF" href="#" class="tabexport"><i class="fa fa-file-pdf-o"></i> PDF</a></li-->
                 <li id="tabCSV" role="presentation"><a id="tabExportCSV" href="#" class="tabexport"><i class="fa fa-file-code-o"></i> CSV</a></li>
                 <li id="tabEXCEL" role="presentation"><a id="tabExportEXCEL" href="#" class="tabexport"><i class="fa fa-file-excel-o"></i> Excel</a></li>
                 <li id="tabCOPY" role="presentation"><a id="tabExportCOPY" href="#" class="tabexport"><i class="fa fa-clone"></i> Copy</a></li>
