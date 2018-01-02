@@ -238,7 +238,8 @@ function loadForm(destinationSelector, data, fid, status, form_id, repo, allJSON
 
   DZ_remove = [];
 
-  let sections = $.merge(getAdminSectionsTop(), $.merge(getSubmissionSections(), getAdminSectionsBottom()));
+//  let sections = $.merge(getAdminSectionsTop(), $.merge(getSubmissionSections(), getAdminSectionsBottom()));
+  let sections = $.merge(getAdminSectionsTop(), getSubmissionSections());
 
   form = new CotForm({
     id: form_id,
@@ -648,7 +649,7 @@ function getSubmissionSections() {
                 }
               }
             },
-            { id: "submitHelp", title: "", type: "html", html: config["SubmitText"], className: "col-xs-12 col-md-12" },
+         //   { id: "submitHelp", title: "", type: "html", html: config["SubmitText"], className: "col-xs-12 col-md-12" },
             {
               id: "actionBar",
               type: "html",

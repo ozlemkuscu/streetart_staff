@@ -1,6 +1,7 @@
 //const configURLC2 = "//www1.toronto.ca/static_files/WebApps/CommonComponents/streetart/JSONFeed.js"; //opentext link
-const configURLC2 = "https://contrib0.wp.intra.dev-toronto.ca/app_content/streetart_staff_config/"; //wordpress link
-const configURLC3 = "https://was-intra-sit.toronto.ca/c3api_config/v2/ConfigService.svc/ConfigSet('streetart/JSONFeed.js')/ConfigContent"; //c3api link
+const configURLC2 = "https://www.toronto.ca/app_content/streetart_staff_config/"; //wordpress link
+const configURLC3 = "https://contrib0.wp.intra.qa-toronto.ca/app_content/streetart_staff_config/"; //wordpress QA link
+//const configURLC3 = "https://was-intra-sit.toronto.ca/c3api_config/v2/ConfigService.svc/ConfigSet('streetart/JSONFeed.js')/ConfigContent"; //c3api link
 let form_id = "streetart";
 
 const app = new cot_app("StreetARToronto Artist Directory", {
@@ -57,6 +58,7 @@ function loadVariables() {
 function renderApp() {
   //ADD ALL THE LINKS YOU WANT TO THE APPLICATION BREADCRUMB
   httpHost = detectHost();
+
   app.setBreadcrumb(config["breadcrumbtrail"]);
   //INCLUDE ANY NECCESSARY JS/CSS LIBRARIES
   //FORMS TYPICALLY USE AT LEAST THE FOLLOWING 3 LIBRARIES
@@ -203,7 +205,7 @@ function listSubmissions(status, filter, repo, target) {
       addFooter: true,
       dateFormat: config.dateFormatView,
       columnDefs: [
-        { "targets": 0, data: null, defaultContent: '', title: '<span class="sr-only">' + config["View_Edit"] + '</span>', "defaultContent": `<a class="btn-default btn-view-edit-report"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></a>` },
+        { "targets": 0, data: null, defaultContent: '', title: '<span class="sr-only">' + config["View_Edit"] + '</span>', "defaultContent": `<button class="btn-default btn-view-edit-report" aria-hidden="true"><span title="View/Edit" class="glyphicon glyphicon-pencil"></span></button>` },
         //{ "targets": 1, data: null, defaultContent: '', title: '<span class="sr-only">' + "Delete" + '</span>', "defaultContent": `<glyphicon glyphicon-remove class="btn btn-danger btn-remove-report"><span title="DElete" class="glyphicon glyphicon-remove"></span></a>` },
         {
           "targets": 1, defaultContent: '', title: config["Submission Date Column"], type: 'date',
@@ -467,7 +469,7 @@ function init() {
   crossroads.addRoute('/{id}:?query:', viewEditPage);
 
   oLogin = new cot_login({
-    ccRoot: config.httpHost.app[httpHost],
+    ccRoot: config.httpHost.app[httpHost],//app[httpHost]
     welcomeSelector: "#app-content-right",
     onLogin: initFrontPage,
     appName: config.default_repo

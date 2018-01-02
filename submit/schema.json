@@ -1,6 +1,31 @@
 {"type":"object","$schema": "http://json-schema.org/draft-04/schema",
-   "properties":{
-     "field": {"type": "string"},
-     "field2": {"type": "string"}
-  },"required": ["field"]
+  "properties":{
+"FirstName": {"type": "string"},
+"LastName": {"type": "string"},
+"ArtistAlias": {"type": "string"},
+"Organization": {"type": "string"},
+"PreferredContactName": {"type": "string"},
+"OrganizationDescription": {"type": "string"},
+"Address": {"type": "string"},
+"City": {"type": "string"},
+"Province": {"type": "string"},
+"PostalCode": {"type": "string"},
+"PrimaryPhone": {"type": "string"},
+"OtherPhone": {"type": "string"},
+"Email": {"type": "string"},
+"URL": {"type": "string"},
+"ContactMethod": {"type": "string"},
+"WorkToPublic": {"type": "string"},
+"Profile": {"type": "string"},
+"IntNavail": {"type": "string"},
+"Exp": {"type": "string"},
+"WorkHistory": {"type": "string"},
+"chkCV": {"type": "string"},
+"chkDeclaration": {"type": "string"},
+"fid": {"type": "string"},
+"action": {"type": "string"},
+"createdBy": {"type": "string"},
+"recCreated": {"type": "string"},
+"lstStatus": {"type": "string"}
+ }
 }
